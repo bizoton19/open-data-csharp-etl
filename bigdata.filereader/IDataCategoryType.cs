@@ -1,0 +1,13 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace bigdata.filereader
+{
+    interface IDataCategoryType
+    {
+     string Type { get; set; }
+    }
+}
