@@ -1,5 +1,6 @@
 ﻿using bigdata.filereader.Model;
 using System;
+using System.Configuration;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,27 +10,47 @@ using Elasticsearch.Net;
 
 namespace bigdata.filereader.ElasticSearchRepositories
 {
+    public  struct Settings
+    {
+        public string UserName { get; set; }
+        public string Password { get; set; }
+        public string ConnectionString { get; set; }
+    }
     public class IncidentRepository : IIncidentRepository
     {
-        private ConnectionConfiguration config;
+        private IConnectionSettingsValues config;
         private Node node;
         private SniffingConnectionPool connectionPool;
+        Settings settings;
         public IncidentRepository()
         {
-            var settings = Newtonsoft.Json.JsonConvert.DeserializeObject<dynamic>("elastic-config.json");
-            var node = new Uri(settings.connectionstring);
+            Init();
+
+        }
+
+        private void Init()
+        {
+            settings = new Settings()
+            {
+                UserName = ConfigurationManager.AppSettings["username"],
+                Password = ConfigurationManager.AppSettings["password"],
+                ConnectionString = ConfigurationManager.AppSettings["elasticloundconnection"]
+            };
+   
+            var node = new Uri(settings.ConnectionString);
 
             var connectionPool = new SniffingConnectionPool(new[] { node });
 
-            var config = new ConnectionConfiguration(connectionPool)
-                .DisableDirectStreaming()
-                .BasicAuthentication(settings.username, settings.password)
-                .RequestTimeout(TimeSpan.FromSeconds(5));
+            config = new ConnectionSettings(new Uri(settings.ConnectionString))
+               .DisableDirectStreaming()
+               .BasicAuthentication(settings.UserName, settings.Password)
+               .RequestTimeout(TimeSpan.FromSeconds(7));
         }
+
         public void Add(IncidentReport incident)
         {
-            var client = new ElasticLowLevelClient(config);
-            var descriptor = new CreateIndexDescriptor("IncidentReport")
+           
+            var descriptor = new CreateIndexDescriptor(incident.Type.ToLowerInvariant())
                 .Mappings(ms => ms
                 .Map<IncidentReport>(m => m.AutoMap())
                 .Map<IncidentReport.RelationShipType>(m => m.AutoMap())
@@ -40,12 +61,28 @@ namespace bigdata.filereader.ElasticSearchRepositories
                 .Map<IncidentReport.ProductCategory>(m => m.AutoMap())
                 .Map<IncidentReport.IncidentDocument>(m => m.AutoMap())
                 );
+            ElasticClient clien = new ElasticClient(config);
+            var result =Nest.Indices.Index(incident.Type);
+            if (!clien.IndexExists(new IndexExistsRequest(result)).Exists)
+            {
+                ICreateIndexResponse index = clien.CreateIndex(incident.Type.ToLowerInvariant(), x =>descriptor);
+            };
             
+            var indexResult = clien.Index<IncidentReport>(incident, i =>
+             i.Index(incident.Type.ToLowerInvariant())
+             .Id(incident.IncidentReportId.ToString())
+             .Type(incident.Type.ToLowerInvariant())
+             .Refresh());
+    
         }
 
         public IncidentReport Get(int IncidentReporId)
         {
-            throw new NotImplementedException();
+           
+            var elastic = new ElasticClient(config);
+
+            var resGet = elastic.GetAsync<IncidentReport>(new GetRequest("IncidentReport", "IncidentReport", IncidentReporId));
+            return resGet.Result.Source;
         }
 
         public void Remove(IncidentReport incident)
