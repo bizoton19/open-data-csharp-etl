@@ -19,8 +19,7 @@ namespace bigdata.filereader.ElasticSearchRepositories
     public class IncidentRepository : IIncidentRepository
     {
         private IConnectionSettingsValues config;
-        private Node node;
-        private SniffingConnectionPool connectionPool;
+        private const string indexprefix = "open-data-";
         Settings settings;
         public IncidentRepository()
         {
@@ -49,8 +48,8 @@ namespace bigdata.filereader.ElasticSearchRepositories
 
         public void Add(IncidentReport incident)
         {
-           
-            var descriptor = new CreateIndexDescriptor(incident.Type.ToLowerInvariant())
+            string indexname = string.Concat(indexprefix, incident.Type.ToLowerInvariant());
+            var descriptor = new CreateIndexDescriptor(indexname)
                 .Mappings(ms => ms
                 .Map<IncidentReport>(m => m.AutoMap())
                 .Map<IncidentReport.RelationShipType>(m => m.AutoMap())
@@ -62,15 +61,15 @@ namespace bigdata.filereader.ElasticSearchRepositories
                 .Map<IncidentReport.IncidentDocument>(m => m.AutoMap())
                 );
             ElasticClient clien = new ElasticClient(config);
-            var result =Nest.Indices.Index(incident.Type);
+            var result =Nest.Indices.Index(indexname);
             if (!clien.IndexExists(new IndexExistsRequest(result)).Exists)
             {
-                ICreateIndexResponse index = clien.CreateIndex(incident.Type.ToLowerInvariant(), x =>descriptor);
+                ICreateIndexResponse index = clien.CreateIndex(indexname, x =>descriptor);
             };
             
             var indexResult = clien.Index<IncidentReport>(incident, i =>
              i.Index(incident.Type.ToLowerInvariant())
-             .Id(incident.IncidentReportId.ToString())
+             .Id(string.Concat(incident.Type,"-",incident.IncidentReportId.ToString()))
              .Type(incident.Type.ToLowerInvariant())
              .Refresh());
     

@@ -17,29 +17,37 @@ namespace bigdata.filereader
 
         static void Main(string[] args)
         {
-
+            System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+            sw.Start();
             IIncidentRepository ir = new IncidentRepository();
-            for (int i = 1; i < 615; i++)
+            var artifactCount = 0;
+            for (int i =298 ; i < 615; i++)
             {
+                Task.Delay(500);
                 string recallsUrl = $"http://www.saferproducts.gov/restwebservices/recall?RecallID={i}&format=json";
                 string incidentDataUrl = $"https://www.saferproducts.gov/incidentdata/api/incidentreports?page={i}";
 
                 jsonPath = incidentDataUrl;
 
-                var recalls = new IncidentReport().GetDataFromPublicApi(jsonPath);
-                
-                recalls.ForEach(r =>
-                        ir.Add(r)
-                        
-                        
-                    
+                var artifacts = new IncidentReport().GetDataFromPublicApi(jsonPath);
+                artifactCount += artifacts.Count;
+                artifacts.ForEach(r =>
+                        AddArtifact(r, ir)
             );
+                artifacts.Clear();
+                Console.WriteLine($"page {i} is last page loaded");
             }
-            
+            sw.Stop();
+            Console.WriteLine("loaded {0} in {1}", artifactCount , sw.Elapsed.Minutes);
             Console.ReadKey();
         }
 
-       
+        private static void AddArtifact(IncidentReport r, IIncidentRepository ir)
+        {
+            ir.Add(r);
+            Console.WriteLine("Added artifact of type {0} and id of {1} to elasticcloud", r.Type, r.IncidentReportId);
+        }
+
     }
 
     

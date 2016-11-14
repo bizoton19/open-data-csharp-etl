@@ -66,6 +66,7 @@
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
     <Reference Include="System.Xml.Linq" />
@@ -76,18 +77,24 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ElasticSearchRepositories\IncidentRepository.cs" />
     <Compile Include="IDataCategoryType.cs" />
+    <Compile Include="Model\IncidentReport.cs" />
+    <Compile Include="Model\Recall.cs" />
+    <Compile Include="Model\IIncidentRepository.cs" />
+    <Compile Include="Model\IRecallRepository.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+    <Resource Include="elastic-config.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Resource>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="CassandraRepositories\" />
-    <Folder Include="ElasticSearchRepositories\" />
-    <Folder Include="Model\" />
     <Folder Include="MongoDBRepositories\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
