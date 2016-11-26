@@ -19,7 +19,7 @@ namespace bigdata.filereader.ElasticSearchRepositories
     public class IncidentRepository : IIncidentRepository
     {
         private IConnectionSettingsValues config;
-        private const string indexprefix = "open-data-";
+        private const string indexprefix = "cpsc-";
         Settings settings;
         public IncidentRepository()
         {
@@ -33,7 +33,7 @@ namespace bigdata.filereader.ElasticSearchRepositories
             {
                 UserName = ConfigurationManager.AppSettings["username"],
                 Password = ConfigurationManager.AppSettings["password"],
-                ConnectionString = ConfigurationManager.AppSettings["elasticloundconnection"]
+                ConnectionString = ConfigurationManager.AppSettings["elasticcloudconnection"]
             };
    
             var node = new Uri(settings.ConnectionString);
@@ -42,8 +42,9 @@ namespace bigdata.filereader.ElasticSearchRepositories
 
             config = new ConnectionSettings(new Uri(settings.ConnectionString))
                .DisableDirectStreaming()
+               .DisableAutomaticProxyDetection(false)
                .BasicAuthentication(settings.UserName, settings.Password)
-               .RequestTimeout(TimeSpan.FromSeconds(7));
+               .RequestTimeout(TimeSpan.FromSeconds(10));
         }
 
         public void Add(IncidentReport incident)
@@ -62,14 +63,16 @@ namespace bigdata.filereader.ElasticSearchRepositories
                 );
             ElasticClient clien = new ElasticClient(config);
             var result =Nest.Indices.Index(indexname);
-            if (!clien.IndexExists(new IndexExistsRequest(result)).Exists)
+            
+            bool exist = clien.IndexExists(new IndexExistsRequest(result)).Exists;
+            if(!exist) 
             {
                 ICreateIndexResponse index = clien.CreateIndex(indexname, x =>descriptor);
-            };
+            }
             
             var indexResult = clien.Index<IncidentReport>(incident, i =>
-             i.Index(incident.Type.ToLowerInvariant())
-             .Id(string.Concat(incident.Type,"-",incident.IncidentReportId.ToString()))
+             i.Index(indexname)
+             .Id(incident.IncidentReportId.ToString())
              .Type(incident.Type.ToLowerInvariant())
              .Refresh());
     

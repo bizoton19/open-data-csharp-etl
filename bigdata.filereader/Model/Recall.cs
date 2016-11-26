@@ -14,7 +14,7 @@ namespace bigdata.filereader.Model
     {
         public Recall()
         {
-            this.Type = "Recall";
+            this.Type = "recall";
         }
         public int RecallID { get; set; }
         public string RecallNumber { get; set; }
@@ -26,6 +26,8 @@ namespace bigdata.filereader.Model
         public DateTime LastPublishDate { get; set; }
         public List<Product> Products { get; set; }
         public Inconjunction<string> Inconjuctions { get; set; }
+        public List<ManufacturerCountry> ManufacturerCountries { get; set; }
+        public List<Manufacturer> Manufacturers { get; set; }
         public List<Image> Images { get; set; }
         public List<Injury> Injuries { get; set; }
         public string Type { get; set; }

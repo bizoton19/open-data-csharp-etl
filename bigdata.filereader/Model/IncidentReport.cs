@@ -14,7 +14,7 @@ namespace bigdata.filereader.Model
     {
         public IncidentReport()
         {
-            this.Type = "IncidentReport";
+            this.Type = "incidentreport";
         }
         public string Type { get; set; }
         public int IncidentReportId { get; set; }
@@ -26,7 +26,7 @@ namespace bigdata.filereader.Model
         public string IncidentDescription { get; set; }
         public string CompanyCommentsExpended { get; set; }
         public string IncidentProductDescription { get; set; }
-        public int ProductManufacturerComapnyId { get; set; }
+        public int ProductManufacturerComapanyId { get; set; }
         public string ProductManufacturerName { get; set; }
         public DateTime ProductManufacturedDate { get; set; }
         public int ProductRetailCompanyId { get; set; }

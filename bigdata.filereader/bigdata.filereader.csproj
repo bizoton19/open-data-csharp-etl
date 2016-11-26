@@ -78,11 +78,15 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="ElasticSearchRepositories\IncidentRepository.cs" />
+    <Compile Include="ElasticSearchRepositories\NeissRepository.cs" />
+    <Compile Include="ElasticSearchRepositories\RecallRepository.cs" />
     <Compile Include="IDataCategoryType.cs" />
     <Compile Include="Model\IncidentReport.cs" />
+    <Compile Include="Model\NeissReport.cs" />
     <Compile Include="Model\Recall.cs" />
     <Compile Include="Model\IIncidentRepository.cs" />
     <Compile Include="Model\IRecallRepository.cs" />
+    <Compile Include="MongoDBRepositories\NeissMongoDbRepository.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -95,7 +99,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="CassandraRepositories\" />
-    <Folder Include="MongoDBRepositories\" />
+    <Folder Include="Services\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

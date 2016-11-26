@@ -20,19 +20,23 @@ namespace bigdata.filereader
             System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
             sw.Start();
             IIncidentRepository ir = new IncidentRepository();
+            IRecallRepository rr = new RecallRepository();
             var artifactCount = 0;
-            for (int i =298 ; i < 615; i++)
+            for (int i =0 ; i < 20000; i++)
             {
-                Task.Delay(500);
+                if (artifactCount == 1000)
+                {
+                    Task.Delay(500);
+                }
                 string recallsUrl = $"http://www.saferproducts.gov/restwebservices/recall?RecallID={i}&format=json";
                 string incidentDataUrl = $"https://www.saferproducts.gov/incidentdata/api/incidentreports?page={i}";
 
-                jsonPath = incidentDataUrl;
+                jsonPath = recallsUrl;// (incidentDataUrl;
 
-                var artifacts = new IncidentReport().GetDataFromPublicApi(jsonPath);
+                var artifacts = new Recall().GetDataFromPublicApi(jsonPath);
                 artifactCount += artifacts.Count;
                 artifacts.ForEach(r =>
-                        AddArtifact(r, ir)
+                        AddArtifact(r, rr)
             );
                 artifacts.Clear();
                 Console.WriteLine($"page {i} is last page loaded");
@@ -42,10 +46,10 @@ namespace bigdata.filereader
             Console.ReadKey();
         }
 
-        private static void AddArtifact(IncidentReport r, IIncidentRepository ir)
+        private static void AddArtifact(Recall r, IRecallRepository ir)
         {
             ir.Add(r);
-            Console.WriteLine("Added artifact of type {0} and id of {1} to elasticcloud", r.Type, r.IncidentReportId);
+            Console.WriteLine("Added artifact of type {0} and id of {1} to elasticcloud", r.Type, r.RecallID);
         }
 
     }
