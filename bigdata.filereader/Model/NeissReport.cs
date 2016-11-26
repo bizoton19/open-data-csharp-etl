@@ -13,6 +13,7 @@ namespace bigdata.filereader.Model
     {
         public int CpscCaseNo { get; set; }
         public DateTime TreatmentDate { get; set; }
+
         public int PSU { get; set; }
         public float Weight { get; set; }
         public Char Stratum { get; set; }
