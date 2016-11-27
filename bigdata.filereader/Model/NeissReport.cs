@@ -6,10 +6,45 @@ using System.Text;
 using System.Threading.Tasks;
 namespace neiss.lookup.model
 {
-    public abstract class LookupBase
+    public abstract class ProductCodeEvent
+    {
+        public DateTime EventDate { get; set; }
+        public Product Product { get; set; }
+
+
+    }
+    public class ProductCodeDeletedEvent : ProductCodeEvent
+    {
+
+    }
+
+    public class ProductCodeDeactivatedEvent : ProductCodeEvent
+    {
+        
+
+    }
+    public class ProductCodeReinstatedEvent: ProductCodeEvent { }
+    public class ProductCodeInitiationEvent: ProductCodeEvent
+    {
+
+    }
+
+    public class ProductCodeExpandedEvent : ProductCodeEvent
+    {
+        List<Product> ExpendedInto { get; set; }
+    }
+    public abstract class LookupBase: ILookupBase
     {
         public int Code { get; set; }
         public string Description { get; set; }
+        public DateTime StartDate { get; set; }
+        public DateTime EndDate { get; set; }
+        public bool IsValid()
+        {
+            return this.EndDate.Date >= DateTime.UtcNow.Date;
+        }
+
+
     }
     public class Race : LookupBase
     {
@@ -29,7 +64,9 @@ namespace neiss.lookup.model
     }
     public class Fire : LookupBase { }
 
-    public class Product : LookupBase { }
+    public class Product : LookupBase {
+        
+    }
     public class Hospital
     {
         public int PSU { get; set; }
