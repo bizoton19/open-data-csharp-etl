@@ -8,6 +8,8 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using bigdata.filereader.AzureStorageRepositories;
+using neiss.lookup.model;
 
 namespace bigdata.filereader
 {
@@ -19,9 +21,36 @@ namespace bigdata.filereader
         {
             System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
             sw.Start();
+            // int artifactCount = ExeculateETLOfPublicData();
+            
+
+            
+            sw.Stop();
+            // Console.WriteLine("loaded {0} in {1}", artifactCount, sw.Elapsed.Minutes);
+            Console.ReadKey();
+        }
+
+        private static void LoadNeissLookUpValuesToKeyValueStorage()
+        {
+            INeissCodeLookupRepository neiss = new NeissCodeLookupRepository();
+            var lookupsFromNeissSASFile = new Utilities.NeissSasFormatsReader("D:\\NEISS_SAS_formats.txt").ReadAll();
+            foreach (var lookup in lookupsFromNeissSASFile)
+            {
+                Console.WriteLine($"adding {lookup.Description}-{lookup.Code} to azure table ");
+                neiss.Add(lookup);
+                Console.WriteLine("complete");
+            }
+
+            var neisquery = neiss.Get(550, "Product");
+            Console.WriteLine($"{neisquery.Code}-{neisquery.Description}");
+
+        }
+
+        private static int ExeculateETLOfIncidentDataToElasticSearch()
+        {
             IIncidentRepository ir = new IncidentRepository();
             var artifactCount = 0;
-            for (int i =298 ; i < 615; i++)
+          for (int i = 298; i < 615; i++)
             {
                 Task.Delay(500);
                 string recallsUrl = $"http://www.saferproducts.gov/restwebservices/recall?RecallID={i}&format=json";
@@ -37,9 +66,8 @@ namespace bigdata.filereader
                 artifacts.Clear();
                 Console.WriteLine($"page {i} is last page loaded");
             }
-            sw.Stop();
-            Console.WriteLine("loaded {0} in {1}", artifactCount , sw.Elapsed.Minutes);
-            Console.ReadKey();
+
+            return artifactCount;
         }
 
         private static void AddArtifact(IncidentReport r, IIncidentRepository ir)
