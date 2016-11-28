@@ -91,7 +91,7 @@ namespace bigdata.filereader.Model
         public Hospital Hospital { get; set; }
         public Gender Gender { get; set; }
         public Race Race { get; set; }
-        public int StatisticalWeight { get; set; }
+        public decimal StatisticalWeight { get; set; }
         public string RaceOther { get; set; }
         public string DiagnosisOther { get; set; }
         public List<string> Narrative { get; set; }
@@ -121,7 +121,7 @@ namespace bigdata.filereader.Model
                         Stratum = fields[3]
 
                     };
-                    StatisticalWeight = Convert.ToInt32(fields[4]);
+                    StatisticalWeight = decimal.Parse(fields[4]);
                     Age = Convert.ToInt32(fields[5]);
                     Gender = new Gender()
                     {
@@ -185,5 +185,6 @@ namespace bigdata.filereader.Model
            
         }
         
-    }
+    
+
 }
