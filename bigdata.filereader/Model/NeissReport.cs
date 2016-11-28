@@ -1,6 +1,7 @@
 ﻿using neiss.lookup.model;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -100,8 +101,89 @@ namespace bigdata.filereader.Model
         public EventLocale EventLocale { get; set; }
         public InjuryDiagnonis InjuryDiagnosis { get; set; }
         public InjuryDisposition InjuryDisposition { get; set; }
-
         public int Age { get; set; }
+        public void GetDataFromYearlyFiles(string neissfilelocation = "D:\\neissinjurydata")
+        {
+            string[] files = Directory.GetFiles(neissfilelocation, "*.tsv");
+            foreach (var file in files)
+            {
+                var content = ReadAsLines(file);
+                foreach(var record in content)
+                {
+                    string[] fields = record.Split('\t');
+                    //map with neiss object
+                    //get lookup label from lookupservice
+                    CpscCaseNumber = Convert.ToInt32(fields[0]);
+                    TreatmentDate = DateTime.Parse(fields[1]);
+                    this.Hospital = new Hospital()
+                    {
+                        PSU = Convert.ToInt32(fields[2]),
+                        Stratum = fields[3]
+
+                    };
+                    StatisticalWeight = Convert.ToInt32(fields[4]);
+                    Age = Convert.ToInt32(fields[5]);
+                    Gender = new Gender()
+                    {
+                        Code = Convert.ToInt32(fields[6]),
+                        // Description = call service to get label
+
+                    };
+                    Race = new Race()
+                    {
+                        Code = Convert.ToInt32(fields[7]),
+
+                    };
+                    RaceOther = fields[8];
+                    InjuryDiagnosis = new InjuryDiagnonis()
+                    {
+                        Code = Convert.ToInt32(fields[9])
+                    };
+                    DiagnosisOther = fields[10];
+                    BodyPart = new BodyPart()
+                    {
+                        Code = Convert.ToInt32(fields[11])
+                    };
+                    InjuryDisposition = new InjuryDisposition()
+                    {
+                        Code = Convert.ToInt32(fields[12])
+                    };
+                    EventLocale = new EventLocale()
+                    {
+                        Code = Convert.ToInt32(fields[13])
+                    };
+                    Products = new List<Product>()
+                    {
+                        new Product()
+                        {
+                            Code = Convert.ToInt32(fields[15])
+                        },
+                        new Product()
+                        {
+                            Code=Convert.ToInt32(fields[16])
+                        }
+                    };
+                    Narrative = new List<string>()
+                    {
+                        fields[17],
+                        fields[18]
+                    };
+                    
+
+                    
+
+
+                }
+            }
+        }
+        private IEnumerable<string> ReadAsLines(string file)
+        {
+            using (var reader = new StreamReader(file))
+                while (!reader.EndOfStream)
+                    yield return reader.ReadLine();
+        }
+           
+        }
         
     }
 }
