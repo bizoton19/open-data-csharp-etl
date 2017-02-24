@@ -1,4 +1,6 @@
-﻿using neiss.lookup.model;
+﻿using bigdata.filereader.Model;
+using bigdata.filereader.Services;
+using neiss.lookup.model;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,7 +12,7 @@ namespace neiss.lookup.model
     public abstract class ProductCodeEvent
     {
         public DateTime EventDate { get; set; }
-        public Product Product { get; set; }
+        public NeissReport.Product Product { get; set; }
 
 
     }
@@ -32,53 +34,20 @@ namespace neiss.lookup.model
 
     public class ProductCodeExpandedEvent : ProductCodeEvent
     {
-        List<Product> ExpendedInto { get; set; }
+        List<NeissReport.Product> ExpendedInto { get; set; }
     }
     public abstract class LookupBase: ILookupBase
     {
-        public int Code { get; set; }
-        public string Description { get; set; }
-        public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
-        public bool IsValid()
-        {
-            return this.EndDate.Date >= DateTime.UtcNow.Date;
-        }
-
-
-    }
-    public class Race : LookupBase
-    {
-
-    }
-
-    public class InjuryDiagnonis : LookupBase
-    {
-
-    }
-
-    public class BodyPart : LookupBase { }
-    public class InjuryDisposition : LookupBase { }
-    public class EventLocale : LookupBase
-    {
-
-    }
-    public class Fire : LookupBase { }
-
-    public class Product : LookupBase {
         
-    }
-    public class Hospital
-    {
-        public int PSU { get; set; }
-        public String Stratum { get; set; }
-    }
+        public int? Code { get; set; }
+        public string Description { get; set; }
 
-    public class Gender : LookupBase
-    {
+        public string Type { get; set; }
+       
 
 
     }
+   
 }
 namespace bigdata.filereader.Model
 {
@@ -86,104 +55,146 @@ namespace bigdata.filereader.Model
 
     public class NeissReport
     {
+        INeissCodeLookupRepository _repo;
+       
+        public NeissReport()
+        {
+           
+        }
+        private int? GetFieldCodeValue(string fieldValue)
+        {
+            return string.IsNullOrEmpty(fieldValue) ? default(int) : Int32.Parse(fieldValue);
+        }
+        public NeissReport(string tsvrecord, INeissCodeLookupRepository repo)
+        {
+            _repo = repo;
+            if (!string.IsNullOrEmpty(tsvrecord))
+            {
+                var fields = tsvrecord.Split('\t');
+                CpscCaseNumber = Int32.Parse(fields[0]);
+                TreatmentDate = DateTime.Parse(fields[1]);
+                NeissHospital = new Hospital()
+                {
+                    PSU = string.IsNullOrEmpty(fields[2]) ? 0 : Int32.Parse(fields[2]),
+                    Stratum = string.IsNullOrEmpty(fields[4]) ? string.Empty: fields[4]
+
+                };
+                StatisticalWeight = decimal.Parse(fields[3]);
+                Age = Int32.Parse(fields[5]);
+                NeissGender = new Gender()
+                {
+                    Code = GetFieldCodeValue(fields[6]).Value,
+                    Description = _repo.Get(GetFieldCodeValue(fields[6]).Value, "Gender").Description
+
+                };
+                NeissRace = new Race()
+                {
+                    Code = GetFieldCodeValue(fields[7]).Value,
+                    Description=_repo.Get(GetFieldCodeValue(fields[7]).Value, "Race").Description
+
+
+                };
+                RaceOther = fields[8];
+                InjuryDiagnosis = new InjuryDiagnonis()
+                {
+                    Code = GetFieldCodeValue(fields[9]).Value,
+                    Description = _repo.Get(GetFieldCodeValue(fields[9]).Value, "InjuryDiagnosis").Description
+
+                };
+                DiagnosisOther = fields[10];
+                NeissBodyPart = new BodyPart()
+                {
+                    Code = GetFieldCodeValue(fields[11]).Value,
+                    Description = _repo.Get(GetFieldCodeValue(fields[11]).Value, "BodyPart").Description
+                };
+                NeissInjuryDisposition = new InjuryDisposition()
+                {
+                    Code = GetFieldCodeValue(fields[12]).Value,
+                    
+                };
+                NeissEventLocale = new EventLocale()
+                {
+                    Code = GetFieldCodeValue(fields[13]).Value,
+                    Description = _repo.Get(GetFieldCodeValue(fields[13]).Value, "EventLocale").Description
+
+                };
+                Products = new List<Product>()
+                    {
+                        new Product()
+                        {
+                            Code = GetFieldCodeValue(fields[15]).Value,
+                            Description = _repo.Get(GetFieldCodeValue(fields[15]).Value, "Product").Description
+
+                        },
+                        new Product()
+                        {
+                            Code=GetFieldCodeValue(fields[16]).Value,
+                            Description = _repo.Get(GetFieldCodeValue(fields[16]).Value, "Product").Description
+
+                        }
+                    };
+                Narrative = new List<string>()
+                    {
+                    
+                    string.IsNullOrEmpty(fields[17]) ? string.Empty : fields[17],
+                        string.IsNullOrEmpty(fields[18]) ? string.Empty : fields[18]
+                       
+                    };
+            }
+        }
+        public class Race : LookupBase
+        {
+           
+        }
+
+        public class InjuryDiagnonis : LookupBase
+        {
+
+        }
+
+        public class BodyPart : LookupBase { }
+        public class InjuryDisposition : LookupBase { }
+        public class EventLocale : LookupBase
+        {
+
+        }
+        public class Fire : LookupBase { }
+
+        public class Product : LookupBase
+        {
+
+        }
+        public class Hospital
+        {
+            public int PSU { get; set; }
+            public String Stratum { get; set; }
+        }
+
+        public class Gender : LookupBase
+        {
+
+
+        }
         public int CpscCaseNumber { get; set; }
         public DateTime TreatmentDate { get; set; }
-        public Hospital Hospital { get; set; }
-        public Gender Gender { get; set; }
-        public Race Race { get; set; }
+        public Hospital NeissHospital { get; set; }
+        public Gender NeissGender { get; set; }
+        public Race NeissRace { get; set; }
         public decimal StatisticalWeight { get; set; }
         public string RaceOther { get; set; }
         public string DiagnosisOther { get; set; }
         public List<string> Narrative { get; set; }
         public List<Product> Products { get; set; }
-        public BodyPart BodyPart { get; set; }
-        public Fire Fire { get; set; }
-        public EventLocale EventLocale { get; set; }
+        public BodyPart NeissBodyPart { get; set; }
+        public Fire NeissFire { get; set; }
+        public EventLocale NeissEventLocale { get; set; }
         public InjuryDiagnonis InjuryDiagnosis { get; set; }
-        public InjuryDisposition InjuryDisposition { get; set; }
-        public int Age { get; set; }
-        public void GetDataFromYearlyFiles(string neissfilelocation = "D:\\neissinjurydata")
-        {
-            string[] files = Directory.GetFiles(neissfilelocation, "*.tsv");
-            foreach (var file in files)
-            {
-                var content = ReadAsLines(file);
-                foreach(var record in content)
-                {
-                    string[] fields = record.Split('\t');
-                    //map with neiss object
-                    //get lookup label from lookupservice
-                    CpscCaseNumber = Convert.ToInt32(fields[0]);
-                    TreatmentDate = DateTime.Parse(fields[1]);
-                    this.Hospital = new Hospital()
-                    {
-                        PSU = Convert.ToInt32(fields[2]),
-                        Stratum = fields[3]
+        public InjuryDisposition NeissInjuryDisposition { get; set; }
+        public int? Age { get; set; }
 
-                    };
-                    StatisticalWeight = decimal.Parse(fields[4]);
-                    Age = Convert.ToInt32(fields[5]);
-                    Gender = new Gender()
-                    {
-                        Code = Convert.ToInt32(fields[6]),
-                        // Description = call service to get label
+      
 
-                    };
-                    Race = new Race()
-                    {
-                        Code = Convert.ToInt32(fields[7]),
-
-                    };
-                    RaceOther = fields[8];
-                    InjuryDiagnosis = new InjuryDiagnonis()
-                    {
-                        Code = Convert.ToInt32(fields[9])
-                    };
-                    DiagnosisOther = fields[10];
-                    BodyPart = new BodyPart()
-                    {
-                        Code = Convert.ToInt32(fields[11])
-                    };
-                    InjuryDisposition = new InjuryDisposition()
-                    {
-                        Code = Convert.ToInt32(fields[12])
-                    };
-                    EventLocale = new EventLocale()
-                    {
-                        Code = Convert.ToInt32(fields[13])
-                    };
-                    Products = new List<Product>()
-                    {
-                        new Product()
-                        {
-                            Code = Convert.ToInt32(fields[15])
-                        },
-                        new Product()
-                        {
-                            Code=Convert.ToInt32(fields[16])
-                        }
-                    };
-                    Narrative = new List<string>()
-                    {
-                        fields[17],
-                        fields[18]
-                    };
-                    
-
-                    
-
-
-                }
-            }
-        }
-        private IEnumerable<string> ReadAsLines(string file)
-        {
-            using (var reader = new StreamReader(file))
-                while (!reader.EndOfStream)
-                    yield return reader.ReadLine();
-        }
-           
-        }
+    }
         
     
 

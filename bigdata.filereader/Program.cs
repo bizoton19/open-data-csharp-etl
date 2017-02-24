@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using bigdata.filereader.AzureStorageRepositories;
 using neiss.lookup.model;
+using bigdata.filereader.Services;
 
 namespace bigdata.filereader
 {
@@ -22,10 +23,11 @@ namespace bigdata.filereader
             System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
             sw.Start();
             // int artifactCount = ExeculateETLOfPublicData();
-            
 
-            
+            NeissService neissservice = new NeissService(new NeissCodeLookupRepository(), new NeissReportRepository());
+            neissservice.TranferDataFromCsvFileToElasticSearch(@"G:\USERS\EXIS\ASalomon\BigData\neiss-raw-tsv\test");
             sw.Stop();
+            Console.WriteLine("loaded NEISS Reports ES in {0}", sw.Elapsed.Minutes);
             // Console.WriteLine("loaded {0} in {1}", artifactCount, sw.Elapsed.Minutes);
             Console.ReadKey();
         }

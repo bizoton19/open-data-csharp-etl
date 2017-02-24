@@ -10,6 +10,7 @@ namespace bigdata.filereader.Model
     {
         NeissReport Get(int CpscCaseNumber);
         void Add(NeissReport report);
+        void Add(IEnumerable<NeissReport> reports,string suffix);
         void Remove(NeissReport report);
     }
 }

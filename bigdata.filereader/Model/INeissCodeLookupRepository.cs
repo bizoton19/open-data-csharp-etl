@@ -9,7 +9,7 @@ namespace bigdata.filereader.Model
 {
   public  interface INeissCodeLookupRepository
     {
-        ILookupBase Get(int code, string entityType);
+        ILookupBase Get(int? code, string entityType);
         void Add(ILookupBase code);
         void Remove(ILookupBase code);
         IEnumerable<ILookupBase> Get(List<ILookupBase> lookupcodes);

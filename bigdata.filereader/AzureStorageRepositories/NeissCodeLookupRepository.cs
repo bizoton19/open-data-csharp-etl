@@ -8,7 +8,10 @@ using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
 using neiss.lookup.model;
 using bigdata.filereader.Model;
-
+using static bigdata.filereader.Model.NeissReport;
+/// <summary>
+/// PLugin module that implements the INeissCodeLookupRepository contract. This module performs CRUD operation on Azure storage tables
+/// </summary>
 namespace bigdata.filereader.AzureStorageRepositories
 {
     public class NeissEntity : TableEntity
@@ -23,14 +26,19 @@ namespace bigdata.filereader.AzureStorageRepositories
         public NeissEntity() { }
         public string Description { get; set; }
     }
-    public class NeissCodeLookupRepository: INeissCodeLookupRepository
+    public class      NeissCodeLookupRepository: INeissCodeLookupRepository
     {
+        public NeissCodeLookupRepository()
+        {
+            this.init();
+        }
         private CloudTable CodeTable;
         CloudTableClient tbleClient;
         private void init()
         {
             CloudStorageAccount storageAccount = CloudStorageAccount.Parse(
                 CloudConfigurationManager.GetSetting("StorageConnectionString"));
+            
             //create table if it doesn't exist
              tbleClient = storageAccount.CreateCloudTableClient();
 
@@ -42,24 +50,54 @@ namespace bigdata.filereader.AzureStorageRepositories
 
         }
 
-        public ILookupBase Get(int code, string entityType)
+        public ILookupBase Get(int? code, string entityType)
         {
-            this.init();
+
+           
             TableOperation getOp = TableOperation.Retrieve<NeissEntity>(entityType,code.ToString(),new List<string>() { "Description"}) ;
             ILookupBase lBase = CreateLookUp(entityType);
             TableResult resultOp = CodeTable.Execute(getOp);
             var result = (NeissEntity)resultOp.Result;
-            lBase.Code = System.Convert.ToInt32(result.RowKey);
-            lBase.Description = result.Description;
+            lBase.Code = result==null ? default(int) : int.Parse(result.RowKey);
+            lBase.Description = result==null? string.Empty:result.Description;
             return lBase;
         }
-
-        private ILookupBase CreateLookUp(string entityType)
+      
+    private ILookupBase CreateLookUp(string entityType)
         {
             if (entityType == "Product")
             {
                 return new Product();
             }
+            if (entityType == "Gender")
+            {
+                return new Gender();
+            }
+            if (entityType == "BodyPart")
+            {
+                return new BodyPart();
+            }
+            if (entityType == "EventLocale")
+            {
+                return new EventLocale();
+            }
+            if (entityType == "Fire")
+            {
+                return new Fire();
+            }
+            if (entityType == "Race")
+            {
+                return new Race();
+            }
+            if (entityType == "InjuryDiagnosis")
+            {
+                return new InjuryDiagnonis();
+            }
+            if (entityType == "InjuryDisposition")
+            {
+                return new InjuryDisposition();
+            }
+            
 
             return null;
         }

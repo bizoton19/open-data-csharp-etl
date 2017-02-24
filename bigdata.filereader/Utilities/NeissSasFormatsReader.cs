@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.IO;
 using bigdata.filereader.Model;
 using neiss.lookup.model;
+using static bigdata.filereader.Model.NeissReport;
 
 namespace bigdata.filereader.Utilities
 {
@@ -16,15 +17,7 @@ namespace bigdata.filereader.Utilities
         {
             _file = file;
         }
-        /// <summary>
-        /// line by line 
-        /// 1. look to see if there is a empty sapce at begining and if there is a VALUE text
-        /// 2. Parse the word to the right of the VALUE text
-        /// 3. Pass the text to the factory so that it converts it to the proper entity string
-        /// 4. Then parse the remaining lines looking for code = value until a semi collon is encoutered
-        /// 5. for each code - value encountered, add it to the list of iLookupBase objects
-        /// </summary>
-        /// <returns></returns>
+        
         public IEnumerable<ILookupBase> ReadAll()
         {
             var lookupList = new List<ILookupBase>();
