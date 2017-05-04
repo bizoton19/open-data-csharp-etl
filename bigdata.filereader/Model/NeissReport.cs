@@ -53,14 +53,16 @@ namespace bigdata.filereader.Model
 {
     
 
-    public class NeissReport
+    public class NeissReport: IDataCategoryType
     {
         INeissCodeLookupRepository _repo;
-       
+
+        
         public NeissReport()
         {
-           
+            this.Type = "NeissReport";
         }
+        public string Type { get; set; }
         private int? GetFieldCodeValue(string fieldValue)
         {
             return string.IsNullOrEmpty(fieldValue) ? default(int) : Int32.Parse(fieldValue);

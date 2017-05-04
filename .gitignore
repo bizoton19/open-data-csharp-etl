@@ -212,4 +212,4 @@ _Pvt_Extensions/
 ModelManifest.xml
 
 # dev config files
-App.config
+*.config

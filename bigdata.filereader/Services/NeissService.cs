@@ -35,7 +35,9 @@ namespace bigdata.filereader.Services
             sw.Start();
             Console.WriteLine("Reading, Mapping and loading for Neiss report starting...");
             Console.WriteLine($"Current start Time {System.DateTime.Now}");
-            GetDataFromYearlyFiles(sourcefolderPath);
+            GenerateMassivedataFromTemplate(sourcefolderPath);
+           
+            //GetDataFromYearlyFiles(sourcefolderPath);
 
             sw.Stop();
             Console.WriteLine($"Load to elasticsearch ended in {sw.Elapsed} minutes");
@@ -74,47 +76,91 @@ namespace bigdata.filereader.Services
                 }
             }
         }
-        public void GetDataFromYearlyFiles(string neissfilelocation = "D:\\neissinjurydata")
+        public void GenerateMassivedataFromTemplate(string neissfilelocation = "D:\\neissinjurydata")
+        {
+            var file = Directory.GetFiles(neissfilelocation, "*.tsv").FirstOrDefault();
+            
+                IEnumerable<IEnumerable<NeissReport>> records = ReadRecords(file);
+
+                foreach (var rec in records)
+                {
+                    var fileinfo = new FileInfo(file);
+                  
+                    var name = fileinfo.Name.Substring(0, fileinfo.Name.IndexOf('.')); //naming convention 
+
+                var age = rec.Select(n => n.Age);
+                Console.WriteLine(age);
+                   
+                }
+            
+
+            //Parallel.ForEach(contentfix.PartitionCollection(660), new ParallelOptions()
+            //{
+            //    MaxDegreeOfParallelism = 1
+
+            //},
+            //(reportlist) =>
+
+
+            //     _neissrepo.Add(reportlist)
+
+
+
+            //);
+
+
+
+
+        }
+
+        public void GenerateMassiveNeissDataSet(string neissfilelocation = "D:\\neissinjurydata")
         {
             foreach (var file in Directory.GetFiles(neissfilelocation, "*.tsv"))
             {
-
-                var contentfix = (
-                                 from line in ReadLines(file).Skip(1).Where(l=>l.Split('\t').Length>=19)
-                                 let neissreport = new NeissReport(line,_neisslookuprepo)
-                                 select neissreport).PartitionCollection(5000);
+                IEnumerable<IEnumerable<NeissReport>> contentfix = ReadRecords(file);
 
                 foreach (var t in contentfix)
                 {
                     var fileinfo = new FileInfo(file);
                     var name = fileinfo.Name.Substring(0, fileinfo.Name.IndexOf('.')); //naming convention 
-                    
+
                     Task.Delay(1500);
-                    _neissrepo.Add(t,name);
+                    _neissrepo.Add(t, name);
                 }
             }
 
             //Parallel.ForEach(contentfix.PartitionCollection(660), new ParallelOptions()
             //{
             //    MaxDegreeOfParallelism = 1
-                
+
             //},
             //(reportlist) =>
 
 
             //     _neissrepo.Add(reportlist)
-                
+
 
 
             //);
-            
+
         }
 
-      
+        private IEnumerable<IEnumerable<NeissReport>> ReadRecords(string file)
+        {
+            return (
+                                             from line in ReadLines(file)
+                                             .Skip(1)
+                                             .Where(l => l
+                                             .Split('\t')
+                                             .Length >= 19)
+                                             let neissreport = new NeissReport(line, _neisslookuprepo)
+                                             select neissreport).PartitionCollection(5000);
+        }
 
-        
-     
-        
+
+
+
+
 
 
 

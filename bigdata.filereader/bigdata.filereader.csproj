@@ -114,10 +114,12 @@
     <Compile Include="ElasticSearchRepositories\NeissReportRepository.cs" />
     <Compile Include="ElasticSearchRepositories\RecallRepository.cs" />
     <Compile Include="IDataCategoryType.cs" />
+    <Compile Include="Model\GSAExportedUrl.cs" />
     <Compile Include="Model\ILookupBase.cs" />
     <Compile Include="Model\IncidentReport.cs" />
     <Compile Include="Model\INeissCodeLookupRepository.cs" />
     <Compile Include="Model\INeissReportRepository.cs" />
+    <Compile Include="Model\ModelFactory.cs" />
     <Compile Include="Model\NeissReport.cs" />
     <Compile Include="Model\Recall.cs" />
     <Compile Include="Model\IIncidentRepository.cs" />
@@ -125,7 +127,9 @@
     <Compile Include="MongoDBRepositories\NeissReportRepository.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Services\DelimitedFileService.cs" />
     <Compile Include="Services\NeissService.cs" />
+    <Compile Include="Utilities\DelimitedFileParser.cs" />
     <Compile Include="Utilities\ExtensionMethods.cs" />
     <Compile Include="Utilities\NeissSasFormatsReader.cs" />
   </ItemGroup>
@@ -138,6 +142,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="CassandraRepositories\" />
+    <Folder Include="HadoopRepositories\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

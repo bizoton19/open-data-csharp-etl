@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace bigdata.filereader
 {
-    interface IDataCategoryType
+    public interface IDataCategoryType
     {
      string Type { get; set; }
     }

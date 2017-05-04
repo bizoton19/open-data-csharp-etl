@@ -25,7 +25,8 @@ namespace bigdata.filereader
             // int artifactCount = ExeculateETLOfPublicData();
 
             NeissService neissservice = new NeissService(new NeissCodeLookupRepository(), new NeissReportRepository());
-            neissservice.TranferDataFromCsvFileToElasticSearch(@"G:\USERS\EXIS\ASalomon\BigData\neiss-raw-tsv\test");
+            //neissservice.TranferDataFromCsvFileToElasticSearch(@"G:\USERS\EXIS\ASalomon\BigData\neiss-raw-tsv\test");
+            neissservice.GenerateMassivedataFromTemplate(@"G:\USERS\EXIS\ASalomon\BigData\neiss-raw-tsv\test");
             sw.Stop();
             Console.WriteLine("loaded NEISS Reports ES in {0}", sw.Elapsed.Minutes);
             // Console.WriteLine("loaded {0} in {1}", artifactCount, sw.Elapsed.Minutes);
