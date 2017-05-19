@@ -110,9 +110,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AzureStorageRepositories\NeissCodeLookupRepository.cs" />
+    <Compile Include="CassandraRepositories\EbayProductRepository.cs" />
+    <Compile Include="CassandraRepositories\IncidentReportRepository.cs" />
+    <Compile Include="CassandraRepositories\NeissReportRepository.cs" />
+    <Compile Include="CassandraRepositories\RecallRepository.cs" />
+    <Compile Include="CassandraRepositories\TwitterRepository.cs" />
     <Compile Include="ElasticSearchRepositories\IncidentRepository.cs" />
     <Compile Include="ElasticSearchRepositories\NeissReportRepository.cs" />
     <Compile Include="ElasticSearchRepositories\RecallRepository.cs" />
+    <Compile Include="HadoopRepositories\EbayProductRepository.cs" />
+    <Compile Include="HadoopRepositories\IncidentReportRepository.cs" />
+    <Compile Include="HadoopRepositories\NeissReportRepository.cs" />
+    <Compile Include="HadoopRepositories\RecallRepository.cs" />
+    <Compile Include="HadoopRepositories\TwitterRepository.cs" />
     <Compile Include="IDataCategoryType.cs" />
     <Compile Include="Model\GSAExportedUrl.cs" />
     <Compile Include="Model\ILookupBase.cs" />
@@ -138,11 +148,12 @@
     <Resource Include="elastic-config.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
+    <None Include="Model\CpscData.cd" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="CassandraRepositories\" />
-    <Folder Include="HadoopRepositories\" />
+    <Folder Include="HbaseRepository\" />
+    <Folder Include="SolrRepositories\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

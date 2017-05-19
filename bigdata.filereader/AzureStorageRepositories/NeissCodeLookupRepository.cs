@@ -121,7 +121,7 @@ namespace bigdata.filereader.AzureStorageRepositories
         {
             List<ILookupBase> lookups = new List<ILookupBase>();
             lookupcodes.ForEach(c => lookups.Add(this.Get(c.Code, c.GetType().Name)));
-            return lookups;
+            return lookups; 
         }
 
         

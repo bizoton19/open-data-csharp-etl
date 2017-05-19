@@ -1,0 +1,175 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<ClassDiagram MajorVersion="1" MinorVersion="1">
+  <Class Name="bigdata.filereader.Model.Recall">
+    <Position X="1.75" Y="2.25" Width="2.25" />
+    <Compartments>
+      <Compartment Name="Nested Types" Collapsed="false" />
+    </Compartments>
+    <NestedTypes>
+      <Class Name="bigdata.filereader.Model.Recall.Inconjunction&lt;T&gt;">
+        <TypeIdentifier>
+          <NewMemberFileName>Model\Recall.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="bigdata.filereader.Model.Recall.Product">
+        <TypeIdentifier>
+          <NewMemberFileName>Model\Recall.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="bigdata.filereader.Model.Recall.ManufacturerCountry">
+        <TypeIdentifier>
+          <NewMemberFileName>Model\Recall.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="bigdata.filereader.Model.Recall.Manufacturer">
+        <TypeIdentifier>
+          <NewMemberFileName>Model\Recall.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="bigdata.filereader.Model.Recall.Hazard">
+        <TypeIdentifier>
+          <NewMemberFileName>Model\Recall.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="bigdata.filereader.Model.Recall.Remedy">
+        <TypeIdentifier>
+          <NewMemberFileName>Model\Recall.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="bigdata.filereader.Model.Recall.ProductUPC">
+        <TypeIdentifier>
+          <NewMemberFileName>Model\Recall.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="bigdata.filereader.Model.Recall.Image">
+        <TypeIdentifier>
+          <NewMemberFileName>Model\Recall.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="bigdata.filereader.Model.Recall.Retailer">
+        <TypeIdentifier>
+          <NewMemberFileName>Model\Recall.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="bigdata.filereader.Model.Recall.Injury">
+        <TypeIdentifier>
+          <NewMemberFileName>Model\Recall.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AACAQAAABAAgAEAAAAAAAAABACQAABQCBwAAAIAAAAQ=</HashCode>
+      <FileName>Model\Recall.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="neiss.lookup.model.LookupBase">
+    <Position X="4" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAgAAAAAAAgAAAAAAAAAAAAAQAAAAAAAAA=</HashCode>
+      <FileName>Model\NeissReport.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="bigdata.filereader.Model.NeissReport">
+    <Position X="5.25" Y="2.25" Width="2.5" />
+    <NestedTypes>
+      <Class Name="bigdata.filereader.Model.NeissReport.Product" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Model\NeissReport.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="bigdata.filereader.Model.NeissReport.EventLocale" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Model\NeissReport.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="bigdata.filereader.Model.NeissReport.InjuryDiagnonis" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Model\NeissReport.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="bigdata.filereader.Model.NeissReport.InjuryDisposition" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Model\NeissReport.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="bigdata.filereader.Model.NeissReport.BodyPart" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Model\NeissReport.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="bigdata.filereader.Model.NeissReport.Gender" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Model\NeissReport.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="bigdata.filereader.Model.NeissReport.Fire" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Model\NeissReport.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="bigdata.filereader.Model.NeissReport.Hospital" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Model\NeissReport.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="bigdata.filereader.Model.NeissReport.Race" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Model\NeissReport.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>AAAAAAEAAEgAAEEACEQAwEACAAAAAAAAAYAACBAAACQ=</HashCode>
+      <FileName>Model\NeissReport.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="bigdata.filereader.Model.IncidentReport">
+    <Position X="8.5" Y="2.5" Width="2.75" />
+    <NestedTypes>
+      <Class Name="bigdata.filereader.Model.IncidentReport.RelationShipType" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Model\IncidentReport.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="bigdata.filereader.Model.IncidentReport.Gender" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Model\IncidentReport.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="bigdata.filereader.Model.IncidentReport.Locale" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Model\IncidentReport.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="bigdata.filereader.Model.IncidentReport.SeverityType" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Model\IncidentReport.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="bigdata.filereader.Model.IncidentReport.SourceType" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Model\IncidentReport.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="bigdata.filereader.Model.IncidentReport.ProductCategory" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Model\IncidentReport.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+      <Class Name="bigdata.filereader.Model.IncidentReport.IncidentDocument" Collapsed="true">
+        <TypeIdentifier>
+          <NewMemberFileName>Model\IncidentReport.cs</NewMemberFileName>
+        </TypeIdentifier>
+      </Class>
+    </NestedTypes>
+    <TypeIdentifier>
+      <HashCode>QQgIYAgQRAEgAqAQCQIAAQKAAAAAAARAgRQFAAIgAJA=</HashCode>
+      <FileName>Model\IncidentReport.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Font Name="Tahoma" Size="8.25" />
+</ClassDiagram>
