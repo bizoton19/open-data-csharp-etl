@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 using bigdata.filereader.AzureStorageRepositories;
 using neiss.lookup.model;
 using bigdata.filereader.Services;
+using System.Configuration;
+using bigdata.filereader.SolrRepositories;
 
 namespace bigdata.filereader
 {
@@ -23,10 +25,12 @@ namespace bigdata.filereader
             System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
             sw.Start();
             // int artifactCount = ExeculateETLOfPublicData();
-
-            NeissService neissservice = new NeissService(new NeissCodeLookupRepository(), new NeissReportRepository());
+            
+            
+            NeissService neissservice = new NeissService(new NeissCodeLookupRepository(), new NeissSolrRepository());
             //neissservice.TranferDataFromCsvFileToElasticSearch(@"G:\USERS\EXIS\ASalomon\BigData\neiss-raw-tsv\test");
-            neissservice.GenerateMassivedataFromTemplate(@"G:\USERS\EXIS\ASalomon\BigData\neiss-raw-tsv\test");
+            //neissservice.GenerateMassivedataFromTemplate(@"G:\USERS\EXIS\ASalomon\BigData\neiss-raw-tsv\test");
+            neissservice.GenerateMassiveNeissDataSet(ConfigurationManager.AppSettings["NeissData"]);
             sw.Stop();
             Console.WriteLine("loaded NEISS Reports ES in {0}", sw.Elapsed.Minutes);
             // Console.WriteLine("loaded {0} in {1}", artifactCount, sw.Elapsed.Minutes);
@@ -72,6 +76,8 @@ namespace bigdata.filereader
 
             return artifactCount;
         }
+
+
 
         private static void AddArtifact(IncidentReport r, IIncidentRepository ir)
         {

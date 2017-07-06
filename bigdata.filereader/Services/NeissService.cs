@@ -49,6 +49,26 @@ namespace bigdata.filereader.Services
 
 
         }
+        public void TranferDataFromCsvFileToSolr(string sourcefolderPath, string SolrConnectionString = null)
+        {
+            System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+            sw.Start();
+            Console.WriteLine("Reading, Mapping and loading for Neiss report starting...");
+            Console.WriteLine($"Current start Time {System.DateTime.Now}");
+            // GenerateMassivedataFromTemplate(sourcefolderPath);
+
+            GenerateMassiveNeissDataSet(sourcefolderPath);
+
+            sw.Stop();
+            Console.WriteLine($"Load to elasticsearch ended in {sw.Elapsed} minutes");
+            Console.WriteLine($"Current End Time {System.DateTime.Now}");
+
+
+
+
+
+
+        }
         public void TranferDataFromCsvFileToMongoDb(string folderPath, string elasticConnectionString)
         {
 
