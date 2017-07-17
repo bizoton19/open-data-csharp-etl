@@ -35,9 +35,9 @@ namespace bigdata.filereader.Services
             sw.Start();
             Console.WriteLine("Reading, Mapping and loading for Neiss report starting...");
             Console.WriteLine($"Current start Time {System.DateTime.Now}");
-            GenerateMassivedataFromTemplate(sourcefolderPath);
+            //GenerateMassivedataFromTemplate(sourcefolderPath);
            
-            //GetDataFromYearlyFiles(sourcefolderPath);
+            LoadCsvData(sourcefolderPath);
 
             sw.Stop();
             Console.WriteLine($"Load to elasticsearch ended in {sw.Elapsed} minutes");
@@ -49,26 +49,9 @@ namespace bigdata.filereader.Services
 
 
         }
-        public void TranferDataFromCsvFileToSolr(string sourcefolderPath, string SolrConnectionString = null)
-        {
-            System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
-            sw.Start();
-            Console.WriteLine("Reading, Mapping and loading for Neiss report starting...");
-            Console.WriteLine($"Current start Time {System.DateTime.Now}");
-            // GenerateMassivedataFromTemplate(sourcefolderPath);
+     
 
-            GenerateMassiveNeissDataSet(sourcefolderPath);
-
-            sw.Stop();
-            Console.WriteLine($"Load to elasticsearch ended in {sw.Elapsed} minutes");
-            Console.WriteLine($"Current End Time {System.DateTime.Now}");
-
-
-
-
-
-
-        }
+     
         public void TranferDataFromCsvFileToMongoDb(string folderPath, string elasticConnectionString)
         {
 
@@ -133,7 +116,7 @@ namespace bigdata.filereader.Services
 
         }
 
-        public void GenerateMassiveNeissDataSet(string neissfilelocation = "D:\\neissinjurydata")
+        public void LoadCsvData(string neissfilelocation = "D:\\neissinjurydata")
         {
             foreach (var file in Directory.GetFiles(neissfilelocation, "*.tsv"))
             {
@@ -141,10 +124,12 @@ namespace bigdata.filereader.Services
 
                 foreach (var t in contentfix)
                 {
+                    Console.WriteLine($"preparing to add {t.ToList().Count} indexes");
                     var fileinfo = new FileInfo(file);
                     var name = fileinfo.Name.Substring(0, fileinfo.Name.IndexOf('.')); //naming convention 
 
-                    Task.Delay(1500);
+                    // Task.Delay(1500);
+                    Console.WriteLine($"passing {t.ToList().Count} to neiss data store");
                     _neissrepo.Add(t, name);
                 }
             }
@@ -168,7 +153,7 @@ namespace bigdata.filereader.Services
         private IEnumerable<IEnumerable<NeissReport>> ReadRecords(string file)
         {
             return (
-                                             from line in ReadLines(file)
+                      from line in ReadLines(file)
                                              .Skip(1)
                                              .Where(l => l
                                              .Split('\t')

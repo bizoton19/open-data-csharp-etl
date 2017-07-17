@@ -61,7 +61,7 @@ namespace bigdata.filereader.ElasticSearchRepositories
         {
             string indexname = string.Concat(indexprefix, report.GetType().Name.ToLowerInvariant());
             ElasticClient clien = BootstrapClient(indexname);
-
+            Console.WriteLine($"adding {report.CpscCaseNumber} to elastic search");
             var indexResult = await clien.IndexAsync<NeissReport>(report, i =>
              i.Index(indexname)
              .Id(report.CpscCaseNumber)
@@ -90,6 +90,7 @@ namespace bigdata.filereader.ElasticSearchRepositories
             bool exist = clien.IndexExists(new IndexExistsRequest(result)).Exists;
             if (!exist)
             {
+                
                 ICreateIndexResponse index = clien.CreateIndex(indexname, x => descriptor);
             }
 

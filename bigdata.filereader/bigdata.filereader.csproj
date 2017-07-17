@@ -56,10 +56,10 @@
     <ManifestKeyFile>bigdata.filereader_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <GenerateManifests>true</GenerateManifests>
+    <GenerateManifests>false</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>true</SignManifests>
+    <SignManifests>false</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
     <TargetZone>LocalIntranet</TargetZone>
@@ -178,12 +178,16 @@
     <Compile Include="Services\DelimitedFileService.cs" />
     <Compile Include="Services\NeissService.cs" />
     <Compile Include="SolrRepositories\NeissSolrRepository.cs" />
+    <Compile Include="SolrRepositories\RecallSolrRepository.cs" />
     <Compile Include="Utilities\DelimitedFileParser.cs" />
     <Compile Include="Utilities\ExtensionMethods.cs" />
     <Compile Include="Utilities\NeissSasFormatsReader.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="App.dev.config" />
     <None Include="bigdata.filereader_TemporaryKey.pfx" />
     <None Include="Properties\app.manifest" />
     <None Include="SolrNet.chm" />

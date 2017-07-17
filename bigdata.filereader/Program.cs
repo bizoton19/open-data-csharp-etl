@@ -13,6 +13,13 @@ using neiss.lookup.model;
 using bigdata.filereader.Services;
 using System.Configuration;
 using bigdata.filereader.SolrRepositories;
+using SolrNet;
+using Microsoft.Practices.ServiceLocation;
+using SolrNet.Impl;
+using SolrNet.Utils;
+using SolrNet.Commands;
+using SolrNet.DSL;
+using SolrNet.Mapping;
 
 namespace bigdata.filereader
 {
@@ -22,18 +29,24 @@ namespace bigdata.filereader
 
         static void Main(string[] args)
         {
-            System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+            Startup.Init<Recall>(ConfigurationManager.AppSettings["solrConnection"]);
+            //var headerParser = ServiceLocator.Current.GetInstance<ISolrHeaderResponseParser>();
+            //var statusParser = ServiceLocator.Current.GetInstance<ISolrStatusResponseParser>();
+              
+            //ISolrCoreAdmin solrCoreAdmin = new SolrCoreAdmin(new SolrConnection(ConfigurationManager.AppSettings["solrConnection"]), headerParser, statusParser);
+            
+                        System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
             sw.Start();
-            // int artifactCount = ExeculateETLOfPublicData();
-            
-            
-            NeissService neissservice = new NeissService(new NeissCodeLookupRepository(), new NeissSolrRepository());
-            //neissservice.TranferDataFromCsvFileToElasticSearch(@"G:\USERS\EXIS\ASalomon\BigData\neiss-raw-tsv\test");
+            int artifactCount = ExeculateETLOfRecallsToElasticSearch();
+
+            Startup.Init<Recall>(ConfigurationManager.AppSettings["solrConnection"]);
+            //NeissService neissservice = new NeissService(new NeissCodeLookupRepository(), new ElasticSearchRepositories.NeissReportRepository());
+            // neissservice.TranferDataFromCsvFileToElasticSearch(@"E:\sparkData\input");
             //neissservice.GenerateMassivedataFromTemplate(@"G:\USERS\EXIS\ASalomon\BigData\neiss-raw-tsv\test");
-            neissservice.GenerateMassiveNeissDataSet(ConfigurationManager.AppSettings["NeissData"]);
+            //neissservice.GenerateMassiveNeissDataSet(ConfigurationManager.AppSettings["NeissData"]);
             sw.Stop();
             Console.WriteLine("loaded NEISS Reports ES in {0}", sw.Elapsed.Minutes);
-            // Console.WriteLine("loaded {0} in {1}", artifactCount, sw.Elapsed.Minutes);
+            Console.WriteLine("loaded {0} in {1}", artifactCount, sw.Elapsed.Minutes);
             Console.ReadKey();
         }
 
@@ -53,19 +66,19 @@ namespace bigdata.filereader
 
         }
 
-        private static int ExeculateETLOfIncidentDataToElasticSearch()
+        private static int ExeculateETLOfRecallsToElasticSearch()
         {
-            IIncidentRepository ir = new IncidentRepository();
+            IRecallRepository ir = new RecallSolrRepository();
             var artifactCount = 0;
-          for (int i = 298; i < 615; i++)
+          for (int i = 1; i < 5000; i++)
             {
-                Task.Delay(500);
-                string recallsUrl = $"http://www.saferproducts.gov/restwebservices/recall?RecallID={i}&format=json";
-                string incidentDataUrl = $"https://www.saferproducts.gov/incidentdata/api/incidentreports?page={i}";
+                
+                string recallsUrl = $"https://www.saferproducts.gov/RestWebServices/Recall?RecallID={i}&format=json";
+                // string incidentDataUrl = $"https://www.saferproducts.gov/incidentdata/api/incidentreports?page={i}";
 
-                jsonPath = incidentDataUrl;
+                //jsonPath = incidentDataUrl;
 
-                var artifacts = new IncidentReport().GetDataFromPublicApi(jsonPath);
+                var artifacts = new Recall().GetDataFromPublicApi(recallsUrl);
                 artifactCount += artifacts.Count;
                 artifacts.ForEach(r =>
                         AddArtifact(r, ir)
@@ -79,10 +92,10 @@ namespace bigdata.filereader
 
 
 
-        private static void AddArtifact(IncidentReport r, IIncidentRepository ir)
+        private static void AddArtifact(Recall r, IRecallRepository ir)
         {
             ir.Add(r);
-            Console.WriteLine("Added artifact of type {0} and id of {1} to elasticcloud", r.Type, r.IncidentReportId);
+            Console.WriteLine("Added artifact of type {0} and id of {1} to elasticcloud", r.Type,r.RecallID );
         }
 
     }
