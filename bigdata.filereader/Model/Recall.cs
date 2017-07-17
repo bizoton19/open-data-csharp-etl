@@ -22,9 +22,37 @@ namespace bigdata.filereader.Model
         public string RecallDescription { get; set; }
     }
 
-    public class RecallDelimited:RecallBase
+    public class Hazard
     {
-       
+        public string Name { get; set; }
+        public string HazardTypeID { get; set; }
+    }
+
+    public class Product
+    {
+        public string Type { get; set; }
+        public string CategoryID { get; set; }
+    }
+
+    public class RecallReduced: RecallBase,IDataCategoryType
+    {
+        public RecallReduced()
+        {
+            this.Type = "recallReduced";
+        }
+
+        public List<Hazard> Hazards { get; set; }
+        public List<Product> Products { get; set; }
+        public string Type { get; set; }
+    }
+
+    public class RecallDelimited:RecallBase, IDataCategoryType
+    {
+        public RecallDelimited()
+        {
+            this.Type = "recallDelimited";
+        }
+        public string Type { get; set; }
         public List<string> ProductName { get; set; }
         public List<string> ProductDescription { get; set; }
         public List<string> ProductModel { get; set; }
