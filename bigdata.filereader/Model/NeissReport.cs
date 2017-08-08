@@ -1,4 +1,5 @@
-﻿using bigdata.filereader.Model;
+﻿using bigdata.filereader.CsvRepositories;
+using bigdata.filereader.Model;
 using bigdata.filereader.Services;
 using neiss.lookup.model;
 using System;
@@ -65,9 +66,10 @@ namespace bigdata.filereader.Model
         public string Type { get; set; }
         private int? GetFieldCodeValue(string fieldValue)
         {
-            return string.IsNullOrEmpty(fieldValue) ? default(int) : Int32.Parse(fieldValue);
+            return string.IsNullOrEmpty(fieldValue) ? Int32.MinValue : Int32.Parse(fieldValue);
         }
-        public NeissReport(string tsvrecord, INeissCodeLookupRepository repo)
+       
+        public NeissReport(string tsvrecord, INeissCodeLookupRepository repo=null)
         {
             _repo = repo;
             if (!string.IsNullOrEmpty(tsvrecord))
@@ -77,7 +79,7 @@ namespace bigdata.filereader.Model
                 TreatmentDate = DateTime.Parse(fields[1]);
                 NeissHospital = new Hospital()
                 {
-                    PSU = string.IsNullOrEmpty(fields[2]) ? 0 : Int32.Parse(fields[2]),
+                    PSU = string.IsNullOrEmpty(fields[2]) ? Int32.MinValue : Int32.Parse(fields[2]),
                     Stratum = string.IsNullOrEmpty(fields[4]) ? string.Empty: fields[4]
 
                 };
@@ -86,13 +88,14 @@ namespace bigdata.filereader.Model
                 NeissGender = new Gender()
                 {
                     Code = GetFieldCodeValue(fields[6]).Value,
-                    Description = _repo.Get(GetFieldCodeValue(fields[6]).Value, "Gender").Description
+                    //Description = _repo.Get(GetFieldCodeValue(fields[6]).Value, "Gender").Description
 
                 };
+               
                 NeissRace = new Race()
                 {
                     Code = GetFieldCodeValue(fields[7]).Value,
-                    Description=_repo.Get(GetFieldCodeValue(fields[7]).Value, "Race").Description
+                    //Description=_repo.Get(GetFieldCodeValue(fields[7]).Value, "Race").Description
 
 
                 };
@@ -100,14 +103,14 @@ namespace bigdata.filereader.Model
                 InjuryDiagnosis = new InjuryDiagnonis()
                 {
                     Code = GetFieldCodeValue(fields[9]).Value,
-                    Description = _repo.Get(GetFieldCodeValue(fields[9]).Value, "InjuryDiagnosis").Description
+                   // Description = _repo.Get(GetFieldCodeValue(fields[9]).Value, "InjuryDiagnosis").Description
 
                 };
                 DiagnosisOther = fields[10];
                 NeissBodyPart = new BodyPart()
                 {
                     Code = GetFieldCodeValue(fields[11]).Value,
-                    Description = _repo.Get(GetFieldCodeValue(fields[11]).Value, "BodyPart").Description
+                   // Description = _repo.Get(GetFieldCodeValue(fields[11]).Value, "BodyPart").Description
                 };
                 NeissInjuryDisposition = new InjuryDisposition()
                 {
@@ -117,7 +120,7 @@ namespace bigdata.filereader.Model
                 NeissEventLocale = new EventLocale()
                 {
                     Code = GetFieldCodeValue(fields[13]).Value,
-                    Description = _repo.Get(GetFieldCodeValue(fields[13]).Value, "EventLocale").Description
+                    //Description = _repo.Get(GetFieldCodeValue(fields[13]).Value, "EventLocale").Description
 
                 };
                 Products = new List<Product>()
@@ -125,13 +128,13 @@ namespace bigdata.filereader.Model
                         new Product()
                         {
                             Code = GetFieldCodeValue(fields[15]).Value,
-                            Description = _repo.Get(GetFieldCodeValue(fields[15]).Value, "Product").Description
+                            //Description = _repo.Get(GetFieldCodeValue(fields[15]).Value, "Product").Description
 
                         },
                         new Product()
                         {
                             Code=GetFieldCodeValue(fields[16]).Value,
-                            Description = _repo.Get(GetFieldCodeValue(fields[16]).Value, "Product").Description
+                            //Description = _repo.Get(GetFieldCodeValue(fields[16]).Value, "Product").Description
 
                         }
                     };

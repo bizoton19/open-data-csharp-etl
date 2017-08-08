@@ -13,7 +13,8 @@ namespace bigdata.filereader.Services
         private string _dataType;
         private string _fileExtension;
         private string _fileLocation;
-        public DelimitedFileService(string datatype, string fileLocation ,string fileextension)
+        private char _delimiter;
+        public DelimitedFileService(string datatype, string fileLocation ,string fileextension,char delimiter=',')
         {
             this._fileExtension = fileextension;
             this._dataType = datatype;
@@ -23,7 +24,7 @@ namespace bigdata.filereader.Services
         public void CreateModelFromDelimitedRecord()
         {
             
-            var m = DelimitedFileParser.Parse(_fileLocation,_dataType, _fileExtension,',');
+            var m = DelimitedFileParser.Parse(_dataType,_fileLocation, _fileExtension,_delimiter);
           
 
         }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using bigdata.filereader.Model.Recalls;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,6 +15,10 @@ namespace bigdata.filereader.Model
             {
                 case "Recall":
                     return new Recall();
+                case "RecallDelimited":
+                    return new RecallDelimited();
+                case "RecallReduced":
+                    return new RecallReduced();
                 case "GSAExportedUrl":
                     return new GSAExportedUrl();
                 case "NeissReport":

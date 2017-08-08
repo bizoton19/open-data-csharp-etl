@@ -1,4 +1,5 @@
 ﻿using bigdata.filereader.Model;
+using bigdata.filereader.Model.Recalls;
 using Microsoft.Practices.ServiceLocation;
 using SolrNet;
 using SolrNet.Mapping;
@@ -11,9 +12,9 @@ using System.Threading.Tasks;
 
 namespace bigdata.filereader.SolrRepositories
 {
-    public class RecallSolrRepository : IRecallRepository
+    public class RecallSolrRepository //: IRecallRepository
     {
-        private SolrNet.ISolrOperations<Recall> solr;
+        private SolrNet.ISolrOperations<RecallDelimited> solr;
         private const string indexprefix = "cpsc-";
         //Settings settings;
         public RecallSolrRepository()
@@ -30,25 +31,27 @@ namespace bigdata.filereader.SolrRepositories
 
         }
 
-        Recall IRecallRepository.Get(int Number)
-        {
-            throw new NotImplementedException();
-        }
+        //RecallBase IRecallRepository.Get(int Number)
+        //{
+        //    throw new NotImplementedException();
+        //}
 
-        public void Add(Recall recall)
-        {
-            
-            solr = ServiceLocator.Current.GetInstance<ISolrOperations<Recall>>();
-            var mapper = new AllPropertiesMappingManager();
-            //mapper.SetUniqueKey(typeof(Recall).GetProperty("RecallNumber"));
+        //public void Add(RecallBase recall)
+        //{
            
-            solr.Add(recall);
-            solr.Commit();
-        }
+        //    solr = ServiceLocator.Current.GetInstance<ISolrOperations<RecallDelimited>>();
+        //    var mapper = new AllPropertiesMappingManager();
+        //    //mapper.SetUniqueKey(typeof(Recall).GetProperty("RecallNumber"));
+           
+        //    solr.Add((RecallDelimited)recall);
+        //    solr.Commit();
+        //}
 
-        public void Remove(Recall recall)
-        {
-            throw new NotImplementedException();
-        }
+        //public void Remove(RecallBase recall)
+        //{
+        //    throw new NotImplementedException();
+        //}
+
+       
     }
     }

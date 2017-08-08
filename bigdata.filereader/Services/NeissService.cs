@@ -1,6 +1,7 @@
 ﻿using bigdata.filereader.Model;
 using neiss.lookup.model;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -14,12 +15,13 @@ namespace bigdata.filereader.Services
     {
         INeissCodeLookupRepository _neisslookuprepo;
         INeissReportRepository _neissrepo;
-
+        System.Collections.Concurrent.ConcurrentBag<NeissReport> _bag;
 
         public NeissService(INeissCodeLookupRepository neisslookuprepo, INeissReportRepository neissrepo)
         {
             _neissrepo = neissrepo;
             _neisslookuprepo = neisslookuprepo;
+            _bag = new ConcurrentBag<NeissReport>();
         }
 
         public ILookupBase GetNeissLookupValues(string partitionkey, int rowkey)
@@ -61,11 +63,11 @@ namespace bigdata.filereader.Services
         {
 
         }
-      
         private int? GetFieldCodeValue(string[] fields, int fieldposition)
         {
             return string.IsNullOrEmpty(fields[fieldposition]) ? default(int) : Int32.Parse(fields[fieldposition]);
         }
+        
         
         private IEnumerable<string> ReadLines(string filename)
         { 
@@ -79,81 +81,57 @@ namespace bigdata.filereader.Services
                 }
             }
         }
-        public void GenerateMassivedataFromTemplate(string neissfilelocation = "D:\\neissinjurydata")
+
+        private IEnumerable<string> ReadLinesParallel(string filename)
         {
-            var file = Directory.GetFiles(neissfilelocation, "*.tsv").FirstOrDefault();
-            
-                IEnumerable<IEnumerable<NeissReport>> records = ReadRecords(file);
 
-                foreach (var rec in records)
-                {
-                    var fileinfo = new FileInfo(file);
-                  
-                    var name = fileinfo.Name.Substring(0, fileinfo.Name.IndexOf('.')); //naming convention 
-
-                var age = rec.Select(n => n.Age);
-                Console.WriteLine(age);
-                   
-                }
-            
-
-            //Parallel.ForEach(contentfix.PartitionCollection(660), new ParallelOptions()
-            //{
-            //    MaxDegreeOfParallelism = 1
-
-            //},
-            //(reportlist) =>
-
-
-            //     _neissrepo.Add(reportlist)
-
-
-
-            //);
-
-
-
-
-        }
-
-        public void LoadCsvData(string neissfilelocation = "D:\\neissinjurydata")
-        {
-            foreach (var file in Directory.GetFiles(neissfilelocation, "*.tsv"))
+            using (StreamReader reader = File.OpenText(filename))
             {
-                IEnumerable<IEnumerable<NeissReport>> contentfix = ReadRecords(file);
-
-                foreach (var t in contentfix)
+                
+                while (!reader.EndOfStream)
                 {
-                    Console.WriteLine($"preparing to add {t.ToList().Count} indexes");
-                    var fileinfo = new FileInfo(file);
-                    var name = fileinfo.Name.Substring(0, fileinfo.Name.IndexOf('.')); //naming convention 
-
-                    // Task.Delay(1500);
-                    Console.WriteLine($"passing {t.ToList().Count} to neiss data store");
-                    _neissrepo.Add(t, name);
+                    yield return reader.ReadLine(); ;
                 }
             }
+        }
+      
+        private void BatchLoad(string file)
+        {
+            IEnumerable<IEnumerable<NeissReport>> contentfix = ReadRecords(file);
+            Console.WriteLine($"preparing to process groups of {contentfix.ToList().Count} neiss reports");
+            foreach (var t in contentfix)
+            {
+                Console.WriteLine($"preparing to add {t.ToList().Count} indexes");
+                var fileinfo = new FileInfo(file);
+                var name = fileinfo.Name.Substring(0, fileinfo.Name.IndexOf('.')); //naming convention 
 
-            //Parallel.ForEach(contentfix.PartitionCollection(660), new ParallelOptions()
-            //{
-            //    MaxDegreeOfParallelism = 1
+                // Task.Delay(1500);
+                Console.WriteLine($"passing {t.ToList().Count} to neiss data store");
+                _neissrepo.Add(t, name);
+            }
+        }
+        public void LoadCsvData(string neissfilelocation = "D:\\neissinjurydata")
+        {
+            var dirFiles = Directory.GetFiles(neissfilelocation, "*.tsv");
+            Console.WriteLine($"found {dirFiles.Length} files");
+            Parallel.ForEach(dirFiles, new ParallelOptions()
+            {
+                MaxDegreeOfParallelism = 1
+            },
+            (oneFile) =>
 
-            //},
-            //(reportlist) =>
+             BatchLoadParallel(oneFile)
 
-
-            //     _neissrepo.Add(reportlist)
-
-
-
-            //);
-
+            );
+            //Console.WriteLine($"Starting elastic bulk load at {DateTime.Now}");
+            //_neissrepo.Add(_bag, "neiss");
+           // Console.WriteLine($"done with elastic bulk load at {DateTime.Now}");
         }
 
         private IEnumerable<IEnumerable<NeissReport>> ReadRecords(string file)
         {
             return (
-                      from line in ReadLines(file)
+                      from line in ReadLinesParallel(file)
                                              .Skip(1)
                                              .Where(l => l
                                              .Split('\t')
@@ -161,6 +139,83 @@ namespace bigdata.filereader.Services
                                              let neissreport = new NeissReport(line, _neisslookuprepo)
                                              select neissreport).PartitionCollection(5000);
         }
+        private void BatchLoadParallel(string file)
+        {
+            var lines = ReadLinesParallel(file).Skip(1)
+                                    .Where(l => l.Split('\t')
+                                    .Length >= 19);
+                        
+            Console.WriteLine($"lines is now equal to {lines.ToList().Count}");
+            foreach(var line in lines)
+            {
+                ProcessSingleLineDelegate(line);
+            }
+           // Parallel.ForEach(lines, new ParallelOptions()
+           // {
+           //     MaxDegreeOfParallelism = 1
+           // },
+          // (line) =>
+
+              //ProcessSingleLineDelegate(line)
+           // );
+
+        }
+        private void ProcessSingleLineDelegate(string line)
+        {
+
+            var report = new NeissReport(line, _neisslookuprepo);
+            CsvRepositories.NeissCodeLookupRepository lookupRepo = new CsvRepositories.NeissCodeLookupRepository();
+            var lookupRec = lookupRepo.ReadRecords();
+
+          
+          
+            report.InjuryDiagnosis.Description = lookupRec
+                                                        .Where(item => item.PartitionKey.ToLowerInvariant() == report.InjuryDiagnosis.GetType().Name.ToLowerInvariant() 
+                                                               && item.RowKey == report.InjuryDiagnosis.Code.ToString())
+                                                        .Select(x=>x.Description).FirstOrDefault();
+
+            report.NeissBodyPart.Description = lookupRec
+                                                        .Where(item => item.PartitionKey.ToLowerInvariant() == report.NeissBodyPart.GetType().Name.ToLowerInvariant()
+                                                               && item.RowKey == report.NeissBodyPart.Code.ToString())
+                                                        .Select(x => x.Description).FirstOrDefault();
+            report.Products[0].Description = lookupRec
+                                                        .Where(item => item.PartitionKey.ToLowerInvariant() == report.Products[0].GetType().Name.ToLowerInvariant()
+                                                               && item.RowKey == report.Products[0].Code.ToString())
+                                                        .Select(x => x.Description).FirstOrDefault();
+            report.Products[1].Description = lookupRec
+                                                        .Where(item => item.PartitionKey.ToLowerInvariant() == report.Products[1].GetType().Name.ToLowerInvariant()
+                                                               && item.RowKey == report.Products[1].Code.ToString())
+                                                        .Select(x => x.Description).FirstOrDefault();
+            report.NeissEventLocale.Description = lookupRec
+                                                        .Where(item => item.PartitionKey.ToLowerInvariant() == report.NeissEventLocale.GetType().Name.ToLowerInvariant()
+                                                               && item.RowKey == report.NeissEventLocale.Code.ToString())
+                                                        .Select(x => x.Description).FirstOrDefault();
+           
+            report.NeissGender.Description = lookupRec
+                                                        .Where(item => item.PartitionKey.ToLowerInvariant() == report.NeissGender.GetType().Name.ToLowerInvariant()
+                                                               && item.RowKey == report.NeissGender.Code.ToString())
+                                                        .Select(x => x.Description).FirstOrDefault();
+            report.NeissInjuryDisposition.Description = lookupRec
+                                                        .Where(item => item.PartitionKey.ToLowerInvariant() == report.NeissInjuryDisposition.GetType().Name.ToLowerInvariant()
+                                                               && item.RowKey == report.NeissInjuryDisposition.Code.ToString())
+                                                        .Select(x => x.Description).FirstOrDefault();
+            report.NeissRace.Description = lookupRec
+                                                        .Where(item => item.PartitionKey.ToLowerInvariant() == report.NeissRace.GetType().Name.ToLowerInvariant()
+                                                               && item.RowKey == report.NeissRace.Code.ToString())
+                                                        .Select(x => x.Description).FirstOrDefault();
+
+
+            Console.WriteLine($"preparing to add {report.CpscCaseNumber} indexes");
+            _bag.Add(report);
+            Console.WriteLine($"Concurrent bag now has {_bag.Count} neiss reports");
+            if (_bag.Count == 4000)
+            {
+                _neissrepo.Add(_bag, "neiss");
+                _bag = new ConcurrentBag<NeissReport>();
+            }
+
+        }
+        
 
 
 

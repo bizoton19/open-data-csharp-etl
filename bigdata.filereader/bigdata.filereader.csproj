@@ -158,6 +158,7 @@
     <Compile Include="CassandraRepositories\NeissReportRepository.cs" />
     <Compile Include="CassandraRepositories\RecallRepository.cs" />
     <Compile Include="CassandraRepositories\TwitterRepository.cs" />
+    <Compile Include="CsvRepositories\NeissLookupRepository.cs" />
     <Compile Include="ElasticSearchRepositories\IncidentRepository.cs" />
     <Compile Include="ElasticSearchRepositories\NeissReportRepository.cs" />
     <Compile Include="ElasticSearchRepositories\RecallRepository.cs" />

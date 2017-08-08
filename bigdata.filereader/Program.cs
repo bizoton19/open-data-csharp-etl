@@ -20,6 +20,7 @@ using SolrNet.Utils;
 using SolrNet.Commands;
 using SolrNet.DSL;
 using SolrNet.Mapping;
+using bigdata.filereader.Model.Recalls;
 
 namespace bigdata.filereader
 {
@@ -29,6 +30,7 @@ namespace bigdata.filereader
 
         static void Main(string[] args)
         {
+            
             Startup.Init<Recall>(ConfigurationManager.AppSettings["solrConnection"]);
             //var headerParser = ServiceLocator.Current.GetInstance<ISolrHeaderResponseParser>();
             //var statusParser = ServiceLocator.Current.GetInstance<ISolrStatusResponseParser>();
@@ -37,16 +39,17 @@ namespace bigdata.filereader
             
                         System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
             sw.Start();
-            int artifactCount = ExeculateETLOfRecallsToElasticSearch();
+            //int artifactCount = ExeculateETLOfRecallsToElasticSearch();
 
-            Startup.Init<Recall>(ConfigurationManager.AppSettings["solrConnection"]);
-            //NeissService neissservice = new NeissService(new NeissCodeLookupRepository(), new ElasticSearchRepositories.NeissReportRepository());
-            // neissservice.TranferDataFromCsvFileToElasticSearch(@"E:\sparkData\input");
+            //Startup.Init<RecallDelimited>(ConfigurationManager.AppSettings["solrConnection"]);
+            NeissService neissservice = new NeissService(new NeissCodeLookupRepository(), new ElasticSearchRepositories.NeissReportRepository());
+           
+            neissservice.TranferDataFromCsvFileToElasticSearch(@"E:\sparkData\input");
             //neissservice.GenerateMassivedataFromTemplate(@"G:\USERS\EXIS\ASalomon\BigData\neiss-raw-tsv\test");
             //neissservice.GenerateMassiveNeissDataSet(ConfigurationManager.AppSettings["NeissData"]);
             sw.Stop();
             Console.WriteLine("loaded NEISS Reports ES in {0}", sw.Elapsed.Minutes);
-            Console.WriteLine("loaded {0} in {1}", artifactCount, sw.Elapsed.Minutes);
+           // Console.WriteLine("loaded {0} in {1}", artifactCount, sw.Elapsed.Minutes);
             Console.ReadKey();
         }
 
@@ -68,9 +71,9 @@ namespace bigdata.filereader
 
         private static int ExeculateETLOfRecallsToElasticSearch()
         {
-            IRecallRepository ir = new RecallSolrRepository();
+            IRecallRepository ir = new ElasticSearchRepositories.RecallRepository();
             var artifactCount = 0;
-          for (int i = 1; i < 5000; i++)
+          for (int i = 1; i < 7000; i++)
             {
                 
                 string recallsUrl = $"https://www.saferproducts.gov/RestWebServices/Recall?RecallID={i}&format=json";
@@ -95,7 +98,7 @@ namespace bigdata.filereader
         private static void AddArtifact(Recall r, IRecallRepository ir)
         {
             ir.Add(r);
-            Console.WriteLine("Added artifact of type {0} and id of {1} to elasticcloud", r.Type,r.RecallID );
+            Console.WriteLine("Added artifact of type {0} and id of {1} to elasticSearch", r.Type,r.RecallID );
         }
 
     }

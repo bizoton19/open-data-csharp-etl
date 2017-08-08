@@ -45,7 +45,7 @@ namespace bigdata.filereader.ElasticSearchRepositories
        
         public  void Add(IEnumerable<NeissReport> reports,string indexsuffix=null)
         {
-            string type = "neissresolvedlookup";
+            string type = "neiss";
             string indexname = string.Concat(indexprefix, type,"-",string.IsNullOrEmpty(indexsuffix)?string.Empty:indexsuffix);
             ElasticClient clien = BootstrapClient(indexname);
             if (reports.Any())

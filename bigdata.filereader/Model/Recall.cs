@@ -8,7 +8,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace bigdata.filereader.Model
+namespace bigdata.filereader.Model.Recalls
 {
     public abstract class RecallBase
     {
@@ -17,9 +17,10 @@ namespace bigdata.filereader.Model
         public string RecallTitle { get; set; }
         public string RecallNumber { get; set; }
         public int RecallID { get; set; }
-        public string RecallURL { get; set; }
+        public string URL { get; set; }
         public string ConsumerContact { get; set; }
-        public string RecallDescription { get; set; }
+        public string Description { get; set; }
+        public string Type  { get; set; }
     }
 
     public class Hazard
@@ -43,7 +44,7 @@ namespace bigdata.filereader.Model
 
         public List<Hazard> Hazards { get; set; }
         public List<Product> Products { get; set; }
-        public string Type { get; set; }
+        
     }
 
     public class RecallDelimited:RecallBase, IDataCategoryType
@@ -51,8 +52,7 @@ namespace bigdata.filereader.Model
         public RecallDelimited()
         {
             this.Type = "recallDelimited";
-        }
-        public string Type { get; set; }
+        } 
         public List<string> ProductName { get; set; }
         public List<string> ProductDescription { get; set; }
         public List<string> ProductModel { get; set; }
@@ -71,14 +71,37 @@ namespace bigdata.filereader.Model
         public List<string> Remedy { get; set; }
         public List<object> Retailer { get; set; }
         public List<object> RetailerCompanyID { get; set; }
+        public List<RecallDelimited> GetDataFromPublicApi(string uri)
+        {
+            List<RecallDelimited> dataTypes = new List<RecallDelimited>();
+            using (HttpClient client = new HttpClient())
+            using (System.IO.StreamReader sr = new StreamReader(client.GetStreamAsync(new Uri(uri)).Result))
+            using (JsonReader reader = new JsonTextReader(sr))
+            {
+                JsonSerializer serializer = new JsonSerializer();
+                reader.SupportMultipleContent = true;
+                dataTypes = serializer.Deserialize<List<RecallDelimited>>(reader);
+
+            }
+
+            return dataTypes;
+        }
     }
-    public class Recall : RecallBase,IDataCategoryType
+    public class Recall :IDataCategoryType
     {
         public Recall()
         {
             this.Type = "recall";
         }
-       
+        public string RecallDate { get; set; }
+        public string LastPublishDate { get; set; }
+        public string Title { get; set; }
+        public string RecallNumber { get; set; }
+        public int RecallID { get; set; }
+        public string URL { get; set; }
+        public string ConsumerContact { get; set; }
+        public string Description { get; set; }
+        public string Type { get; set; }
         [SolrField("products")]
         public List<Product> Products { get; set; }
         [SolrField("inconjuctions")]
@@ -88,11 +111,13 @@ namespace bigdata.filereader.Model
         [SolrField("manufacturers")]
         public ICollection<Manufacturer> Manufacturers { get; set; }
         [SolrField("images")]
+        
         public ICollection<Image> Images { get; set; }
         [SolrField("injuries")]
         public ICollection<Injury> Injuries { get; set; }
-        [SolrField("type")]
-        public string Type { get; set; }
+        public ICollection<Retailer> Retailers { get; set; }
+       
+        
        
         public class Product
         {
