@@ -190,6 +190,7 @@
     </None>
     <None Include="App.dev.config" />
     <None Include="bigdata.filereader_TemporaryKey.pfx" />
+    <None Include="NeissLookupTable.typed.csv" />
     <None Include="Properties\app.manifest" />
     <None Include="SolrNet.chm" />
     <Resource Include="elastic-config.json">
