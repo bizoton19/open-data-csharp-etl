@@ -13,7 +13,7 @@ namespace bigdata.filereader.ElasticSearchRepositories
     public class NeissReportRepository : INeissReportRepository
     {
         private IConnectionSettingsValues config;
-        private const string indexprefix = "cpsc-";
+        private const string indexNameSplitter = "-";
         Settings settings;
         public NeissReportRepository()
         {
@@ -23,12 +23,8 @@ namespace bigdata.filereader.ElasticSearchRepositories
 
         private void Init()
         {
-            settings = new Settings()
-            {
-                UserName = ConfigurationManager.AppSettings["username"],
-                Password = ConfigurationManager.AppSettings["password"],
-                ConnectionString = ConfigurationManager.AppSettings["elasticcloudconnection"]
-            };
+            settings = new Settings();
+           
 
             var node = new Uri(settings.ConnectionString);
 
@@ -45,8 +41,9 @@ namespace bigdata.filereader.ElasticSearchRepositories
        
         public  void Add(IEnumerable<NeissReport> reports,string indexsuffix=null)
         {
-            string type = "neiss";
-            string indexname = string.Concat(indexprefix, type,"-",string.IsNullOrEmpty(indexsuffix)?string.Empty:indexsuffix);
+            string type = reports.First().Type.ToLowerInvariant().Replace(" ","");
+            var source = reports.First().ArtifactSource.ToLowerInvariant();
+            string indexname = string.Concat(source,indexNameSplitter, type);
             ElasticClient clien = BootstrapClient(indexname);
             if (reports.Any())
             {
@@ -59,7 +56,7 @@ namespace bigdata.filereader.ElasticSearchRepositories
         }
         public async void Add(NeissReport report)
         {
-            string indexname = string.Concat(indexprefix, report.GetType().Name.ToLowerInvariant());
+            string indexname = string.Concat(report.ArtifactSource,indexNameSplitter, report.Type.ToLowerInvariant());
             ElasticClient clien = BootstrapClient(indexname);
             Console.WriteLine($"adding {report.CpscCaseNumber} to elastic search");
             var indexResult = await clien.IndexAsync<NeissReport>(report, i =>
@@ -73,17 +70,344 @@ namespace bigdata.filereader.ElasticSearchRepositories
         {
             var descriptor = new CreateIndexDescriptor(indexname)
                 .Mappings(ms => ms
-                .Map<NeissReport>(m => m.AutoMap())
-                .Map<NeissReport.BodyPart>(m => m.AutoMap())
-                .Map<NeissReport.Gender>(m => m.AutoMap())
-                .Map<NeissReport.EventLocale>(m => m.AutoMap())
-                .Map<NeissReport.Fire>(m => m.AutoMap())
-                .Map<NeissReport.Hospital>(m => m.AutoMap())
-                .Map<NeissReport.InjuryDiagnonis>(m => m.AutoMap())
-                .Map<NeissReport.InjuryDisposition>(m => m.AutoMap())
-                .Map<NeissReport.Product>(m => m.AutoMap())
-                .Map<NeissReport.Race>(m => m.AutoMap())
-                );
+                .Map<NeissReport>(m => m.
+                    AutoMap()
+                        .Properties(r => r
+                           .String(type => type
+                           .Name(nt => nt.Type)
+                           .NotAnalyzed()
+                           .Fields(tf => tf
+                                .String(t => t
+                                    .Name("raw")
+                                    .NotAnalyzed()
+                                    )
+                                )
+                            )
+
+                    .String(artifactSource => artifactSource
+                        .Name(source => source.ArtifactSource)
+                        .NotAnalyzed()
+                        .Fields(sf => sf
+                            .String(t => t
+                                .Name("raw")
+                                .NotAnalyzed()
+                             )
+                         )
+                       )
+
+                      .String(rdesc => rdesc
+                        .Name(desc => desc.Description)
+                        .Index(FieldIndexOption.Analyzed)
+
+                      )
+                       .String(rdesc => rdesc
+                        .Name(desc => desc.Description)
+                        .Index(FieldIndexOption.No)
+                        .Store(false)
+
+                      )
+                       .String(t => t
+                        .Name(title => title.Title)
+                        .Index(FieldIndexOption.Analyzed)
+                      )
+                      .Nested<NeissReport.BodyPart>(nbp => nbp
+                        .Name(b => b.NeissBodyPart)
+                        .AutoMap()
+                        .Properties(bp => bp
+                            .String(code => code
+                                .Name(c => c.Code)
+                                .NullValue("0")
+                                .Index(FieldIndexOption.NotAnalyzed)
+                                )
+                            .String(type => type
+                                .Name(t => t.Type)
+                                .Fields(f => f
+                                    .String(sf => sf
+                                        .Name("raw")
+                                        .NotAnalyzed()
+                                        )
+                                    )
+                                )
+                            .String(desc => desc
+                                .Name(d => d.Description)
+                                .NullValue("N/A")
+                                .Fields(f => f
+                                    .String(sf => sf
+                                        .Name("raw")
+                                        .NotAnalyzed()
+                                        )
+                                    )
+
+                             )
+                         )
+                    )
+                    .Nested<NeissReport.Gender>(ng => ng
+                        .Name(g => g.NeissGender)
+                        .AutoMap()
+                        .Properties(gend => gend
+                            .String(code => code
+                                .Name(c => c.Code)
+                                .NullValue("0")
+                            )
+                            .String(desc => desc
+                                .Name(d => d.Type)
+                                .NullValue("N/A")
+                                .Fields(f => f
+                                    .String(sf => sf
+                                        .Name("raw")
+                                        .NotAnalyzed()
+                                        )
+                                    )
+
+                             )
+                            .String(desc => desc
+                                .Name(d => d.Description)
+                                .NullValue("N/A")
+                                .Fields(f => f
+                                    .String(sf => sf
+                                        .Name("raw")
+                                        .NotAnalyzed()
+                                        )
+                                    )
+
+                             )
+                         )
+                    )
+                    .Nested<NeissReport.EventLocale>(ng => ng
+                        .Name(g => g.NeissEventLocale)
+                        .AutoMap()
+                        .Properties(gend => gend
+                            .String(code => code
+                                .Name(c => c.Code)
+                                .NullValue("0")
+                            )
+                            .String(desc => desc
+                                .Name(d => d.Type)
+                                .NullValue("N/A")
+                                .Fields(f => f
+                                    .String(sf => sf
+                                        .Name("raw")
+                                        .NotAnalyzed()
+                                        )
+                                    )
+
+                             )
+                            .String(desc => desc
+                                .Name(d => d.Description)
+                                .NullValue("N/A")
+                                .Fields(f => f
+                                    .String(sf => sf
+                                        .Name("raw")
+                                        .NotAnalyzed()
+                                        )
+                                    )
+
+                             )
+                         )
+                    )
+                    .Nested<NeissReport.Fire>(ng => ng
+                        .Name(g => g.NeissFire)
+                        .AutoMap()
+                        .Properties(gend => gend
+                            .String(code => code
+                                .Name(c => c.Code)
+                                .NullValue("0")
+                            )
+                            .String(desc => desc
+                                .Name(d => d.Type)
+                                .NullValue("N/A")
+                                .Fields(f => f
+                                    .String(sf => sf
+                                        .Name("raw")
+                                        .NotAnalyzed()
+                                        )
+                                    )
+
+                             )
+                            .String(desc => desc
+                                .Name(d => d.Description)
+                                .NullValue("N/A")
+                                .Fields(f => f
+                                    .String(sf => sf
+                                        .Name("raw")
+                                        .NotAnalyzed()
+                                        )
+                                    )
+
+                             )
+                         )
+                    )
+                     .Nested<NeissReport.Hospital>(ng => ng
+                        .Name(g => g.NeissFire)
+                        .AutoMap()
+                        .Properties(gend => gend
+                            .String(code => code
+                                .Name(c => c.PSU)
+                                .NullValue("0")
+                            )
+                            .String(desc => desc
+                                .Name(d => d.Type)
+                                .NullValue("N/A")
+                                .Fields(f => f
+                                    .String(sf => sf
+                                        .Name("raw")
+                                        .NotAnalyzed()
+                                        )
+                                    )
+
+                             )
+                            .String(s => s
+                                .Name(st => st.Stratum)
+                                .NullValue("N/A")
+                                .Fields(f => f
+                                    .String(sf => sf
+                                        .Name("raw")
+                                        .NotAnalyzed()
+                                        )
+                                    )
+
+                             )
+                         )
+                    )
+                    .Nested<NeissReport.InjuryDiagnonis>(ng => ng
+                        .Name(g => g.InjuryDiagnosis)
+                        .AutoMap()
+                        .Properties(gend => gend
+                            .String(code => code
+                                .Name(c => c.Code)
+                                .NullValue("0")
+                            )
+                            .String(desc => desc
+                                .Name(d => d.Type)
+                                .NullValue("N/A")
+                                .Fields(f => f
+                                    .String(sf => sf
+                                        .Name("raw")
+                                        .NotAnalyzed()
+                                        )
+                                    )
+
+                             )
+                            .String(desc => desc
+                                .Name(d => d.Description)
+                                .NullValue("N/A")
+                                .Fields(f => f
+                                    .String(sf => sf
+                                        .Name("raw")
+                                        .NotAnalyzed()
+                                        )
+                                    )
+
+                             )
+                         )
+                    )
+                     .Nested<NeissReport.InjuryDisposition>(ng => ng
+                        .Name(g => g.NeissInjuryDisposition)
+                        .AutoMap()
+                        .Properties(gend => gend
+                            .String(code => code
+                                .Name(c => c.Code)
+                                .NullValue("0")
+                            )
+                            .String(desc => desc
+                                .Name(d => d.Type)
+                                .NullValue("N/A")
+                                .Fields(f => f
+                                    .String(sf => sf
+                                        .Name("raw")
+                                        .NotAnalyzed()
+                                        )
+                                    )
+
+                             )
+                            .String(desc => desc
+                                .Name(d => d.Description)
+                                .NullValue("N/A")
+                                .Fields(f => f
+                                    .String(sf => sf
+                                        .Name("raw")
+                                        .NotAnalyzed()
+                                        )
+                                    )
+
+                             )
+                         )
+                    )
+                     .Nested<NeissReport.Product>(ng => ng
+                        .Name(g => g.Products)
+                        .AutoMap()
+                        .Properties(gend => gend
+                            .String(code => code
+                                .Name(c => c.Code)
+                                .NullValue("0")
+                            )
+                            .String(desc => desc
+                                .Name(d => d.Type)
+                                .NullValue("N/A")
+                                .Fields(f => f
+                                    .String(sf => sf
+                                        .Name("raw")
+                                        .NotAnalyzed()
+                                        )
+                                    )
+
+                             )
+                            .String(desc => desc
+                                .Name(d => d.Description)
+                                .NullValue("N/A")
+                                .Fields(f => f
+                                    .String(sf => sf
+                                        .Name("raw")
+                                        .NotAnalyzed()
+                                        )
+                                    )
+
+                             )
+                         )
+                    )
+                    .Nested<NeissReport.Race>(ng => ng
+                        .Name(g => g.NeissRace)
+                        .AutoMap()
+                        .Properties(gend => gend
+                            .String(code => code
+                                .Name(c => c.Code)
+                                .NullValue("0")
+                            )
+                            .String(desc => desc
+                                .Name(d => d.Type)
+                                .NullValue("N/A")
+                                .Fields(f => f
+                                    .String(sf => sf
+                                        .Name("raw")
+                                        .NotAnalyzed()
+                                        )
+                                    )
+
+                             )
+                            .String(desc => desc
+                                .Name(d => d.Description)
+                                .NullValue("N/A")
+                                .Fields(f => f
+                                    .String(sf => sf
+                                        .Name("raw")
+                                        .NotAnalyzed()
+                                        )
+                                    )
+
+                             )
+                         )
+                    )
+                )
+            )
+        );
+
+
+
+
+
+
+
+                
             ElasticClient clien = new ElasticClient(config);
             var result = Nest.Indices.Index(indexname);
 

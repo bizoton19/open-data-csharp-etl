@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-using SolrNet.Attributes;
+
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -10,17 +10,54 @@ using System.Threading.Tasks;
 
 namespace bigdata.filereader.Model.Recalls
 {
-    public abstract class RecallBase
+    public abstract class RecallBase: IArtifact
     {
         public string RecallDate { get; set; }
         public string LastPublishDate { get; set; }
-        public string RecallTitle { get; set; }
         public string RecallNumber { get; set; }
         public int RecallID { get; set; }
         public string URL { get; set; }
         public string ConsumerContact { get; set; }
         public string Description { get; set; }
         public string Type  { get; set; }
+
+        public string UUID
+        {
+            get
+            {
+                return string.Concat(ArtifactSource,"-",Type,"-",RecallNumber);
+            }
+
+            
+        }
+
+        public string Title
+        {
+            get; set;
+        }
+
+        public string FullTextSearch
+        {
+            get; set;
+           
+        }
+
+        public DateTime ArtifactDate
+        {
+           
+                get { return DateTime.Parse(this.RecallDate); }
+                
+
+            
+        }
+
+        public string ArtifactSource
+        {
+            get
+            {
+                return "CPSC" ;
+            }
+        }
     }
 
     public class Hazard
@@ -35,7 +72,7 @@ namespace bigdata.filereader.Model.Recalls
         public string CategoryID { get; set; }
     }
 
-    public class RecallReduced: RecallBase,IDataCategoryType
+    public class RecallReduced: RecallBase,IArtifact
     {
         public RecallReduced()
         {
@@ -47,7 +84,7 @@ namespace bigdata.filereader.Model.Recalls
         
     }
 
-    public class RecallDelimited:RecallBase, IDataCategoryType
+    public class RecallDelimited:RecallBase, IArtifact
     {
         public RecallDelimited()
         {
@@ -71,6 +108,7 @@ namespace bigdata.filereader.Model.Recalls
         public List<string> Remedy { get; set; }
         public List<object> Retailer { get; set; }
         public List<object> RetailerCompanyID { get; set; }
+        
         public List<RecallDelimited> GetDataFromPublicApi(string uri)
         {
             List<RecallDelimited> dataTypes = new List<RecallDelimited>();
@@ -87,38 +125,29 @@ namespace bigdata.filereader.Model.Recalls
             return dataTypes;
         }
     }
-    public class Recall :IDataCategoryType
+    public class Recall : RecallBase,IArtifact
     {
         public Recall()
         {
             this.Type = "recall";
         }
-        public string RecallDate { get; set; }
-        public string LastPublishDate { get; set; }
-        public string Title { get; set; }
-        public string RecallNumber { get; set; }
-        public int RecallID { get; set; }
-        public string URL { get; set; }
-        public string ConsumerContact { get; set; }
-        public string Description { get; set; }
-        public string Type { get; set; }
-        [SolrField("products")]
+        
+        
         public List<Product> Products { get; set; }
-        [SolrField("inconjuctions")]
+       
         public Inconjunction<string> Inconjuctions { get; set; }
-        [SolrField("manufacturerCountries")]
+        
         public ICollection<ManufacturerCountry> ManufacturerCountries { get; set; }
-        [SolrField("manufacturers")]
+   
         public ICollection<Manufacturer> Manufacturers { get; set; }
-        [SolrField("images")]
+        
         
         public ICollection<Image> Images { get; set; }
-        [SolrField("injuries")]
+        
         public ICollection<Injury> Injuries { get; set; }
         public ICollection<Retailer> Retailers { get; set; }
-       
+
         
-       
         public class Product
         {
             public string Name { get; set; }

@@ -1,0 +1,1 @@
+﻿.\spark-submit --class sparkWCexample.spWCexample.JavaWordCount --master local[*] /C:/Users/aleja/OneDrive/GitHUb/workspace/spWCexample/target/spWCexample-0.0.1-SNAPSHOT.jar /E:/sparkData/input/nss16.tsv E:/sparkData/output/input1Output.txt

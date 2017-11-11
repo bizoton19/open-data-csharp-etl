@@ -9,7 +9,7 @@ namespace bigdata.filereader.Model
 {
   public static class ModelFactory
     {
-     public static IDataCategoryType  CreateModel(string type)
+     public static IArtifact  CreateModel(string type)
         {
             switch (type)
             {
@@ -19,8 +19,6 @@ namespace bigdata.filereader.Model
                     return new RecallDelimited();
                 case "RecallReduced":
                     return new RecallReduced();
-                case "GSAExportedUrl":
-                    return new GSAExportedUrl();
                 case "NeissReport":
                     return new NeissReport();
                 case "IncidentReport":

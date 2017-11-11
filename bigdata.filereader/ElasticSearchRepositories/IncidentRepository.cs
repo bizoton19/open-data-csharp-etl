@@ -10,16 +10,11 @@ using Elasticsearch.Net;
 
 namespace bigdata.filereader.ElasticSearchRepositories
 {
-    public  struct Settings
-    {
-        public string UserName { get; set; }
-        public string Password { get; set; }
-        public string ConnectionString { get; set; }
-    }
+    
     public class IncidentRepository : IIncidentRepository
     {
         private IConnectionSettingsValues config;
-        private const string indexprefix = "cpsc-";
+        private const string indexNameSplitter = "-";
         Settings settings;
         public IncidentRepository()
         {
@@ -29,12 +24,8 @@ namespace bigdata.filereader.ElasticSearchRepositories
 
         private void Init()
         {
-            settings = new Settings()
-            {
-                UserName = ConfigurationManager.AppSettings["username"],
-                Password = ConfigurationManager.AppSettings["password"],
-                ConnectionString = ConfigurationManager.AppSettings["elasticcloudconnection"]
-            };
+            settings = new Settings();
+            
    
             var node = new Uri(settings.ConnectionString);
 
@@ -49,7 +40,7 @@ namespace bigdata.filereader.ElasticSearchRepositories
 
         public void Add(IncidentReport incident)
         {
-            string indexname = string.Concat(indexprefix, incident.Type.ToLowerInvariant());
+            string indexname = string.Concat(incident.ArtifactSource.ToLowerInvariant(), indexNameSplitter, incident.Type.ToLowerInvariant());
             var descriptor = new CreateIndexDescriptor(indexname)
                 .Mappings(ms => ms
                 .Map<IncidentReport>(m => m.AutoMap())

@@ -43,9 +43,26 @@ namespace neiss.lookup.model
         public int? Code { get; set; }
         public string Description { get; set; }
 
-        public string Type { get; set; }
-       
+        public string Type { get {
+                return BuildType(this.GetType().Name);
+            } set { } }
 
+        protected string BuildType(string typeName)
+        {
+            foreach (var item in typeName)
+            {
+                if (typeName.IndexOf(item) > 0)
+                {
+                    if (char.IsUpper(item))
+                    {
+                        var firstNode = typeName.Substring(0, typeName.IndexOf(item));
+                        typeName = string.Concat(firstNode, " ", typeName.Remove(0, firstNode.Length));
+                    }
+
+                }
+            }
+            return typeName;
+        }
 
     }
    
@@ -54,19 +71,20 @@ namespace bigdata.filereader.Model
 {
     
 
-    public class NeissReport: IDataCategoryType
+    public class NeissReport: IArtifact
     {
         INeissCodeLookupRepository _repo;
 
         
         public NeissReport()
         {
-            this.Type = "NeissReport";
+            
         }
-        public string Type { get; set; }
+        public string Type { get { return  BuildType(this.GetType().Name); } set{ } }  
+   
         private int? GetFieldCodeValue(string fieldValue)
         {
-            return string.IsNullOrEmpty(fieldValue) ? Int32.MinValue : Int32.Parse(fieldValue);
+            return string.IsNullOrEmpty(fieldValue) ? 0 : Int32.Parse(fieldValue);
         }
        
         public NeissReport(string tsvrecord, INeissCodeLookupRepository repo=null)
@@ -79,7 +97,7 @@ namespace bigdata.filereader.Model
                 TreatmentDate = DateTime.Parse(fields[1]);
                 NeissHospital = new Hospital()
                 {
-                    PSU = string.IsNullOrEmpty(fields[2]) ? Int32.MinValue : Int32.Parse(fields[2]),
+                    PSU = string.IsNullOrEmpty(fields[2]) ? 0 : Int32.Parse(fields[2]),
                     Stratum = string.IsNullOrEmpty(fields[4]) ? string.Empty: fields[4]
 
                 };
@@ -169,15 +187,17 @@ namespace bigdata.filereader.Model
         {
 
         }
-        public class Hospital
+        public class Hospital:IDataCategoryType
         {
             public int PSU { get; set; }
             public String Stratum { get; set; }
+            public string Type { get { return this.GetType().Name; } set{ } }
+
         }
 
         public class Gender : LookupBase
         {
-
+            
 
         }
         public int CpscCaseNumber { get; set; }
@@ -197,7 +217,85 @@ namespace bigdata.filereader.Model
         public InjuryDisposition NeissInjuryDisposition { get; set; }
         public int? Age { get; set; }
 
-      
+        public string UUID
+        {
+            get
+            {
+                return string.Concat(ArtifactSource, "-",Type,"-",CpscCaseNumber);
+            }
+        }
+
+        public string Title
+        {
+            get
+            {
+                return 
+                   BuildTitle();
+            }
+            set { }
+        }
+
+        public string Description
+        {
+            get
+            {
+                return 
+                string.Join("-",Narrative);
+            }
+        }
+
+        public string FullTextSearch { get; set; }
+        
+
+        public DateTime ArtifactDate
+        {
+            get
+            {
+              return this.TreatmentDate  ;
+            }
+
+           
+        }
+
+        public string ArtifactSource
+        {
+            get
+            {
+                return "CPSC";
+            }
+        }
+       
+        private string BuildTitle()
+        {
+            string title = $"Emergency room injury involving products: ";
+            for (var i= 0; i< Products.Count;i++)
+            {
+               title = string.Concat(title,
+                    Products[i] == null
+                ? "N/A"
+                : Products[i].Description == null
+                ? Products[i].Code.ToString()
+                : Products[i].Description.ToLowerInvariant());
+            }
+
+            return title;
+        }
+        private string BuildType(string typeName)
+        {
+            foreach (var item in typeName)
+            {
+                if (typeName.IndexOf(item) > 0)
+                {
+                    if (char.IsUpper(item))
+                    {
+                        var firstNode = typeName.Substring(0, typeName.IndexOf(item));
+                        typeName = string.Concat(firstNode, " ", typeName.Remove(0, firstNode.Length));
+                    }
+
+                }
+            }
+            return typeName;
+        }
 
     }
         

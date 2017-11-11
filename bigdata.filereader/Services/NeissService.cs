@@ -150,65 +150,44 @@ namespace bigdata.filereader.Services
             {
                 ProcessSingleLineDelegate(line);
             }
-           // Parallel.ForEach(lines, new ParallelOptions()
-           // {
-           //     MaxDegreeOfParallelism = 1
-           // },
-          // (line) =>
-
-              //ProcessSingleLineDelegate(line)
-           // );
+          
 
         }
+        private string ResolveLookupValue(IList<CsvRepositories.NeissEntity> lookupRec,string partitionKey,string lookupCode)
+        {
+            return lookupRec
+                            .Where(item => item.PartitionKey.ToLowerInvariant() == partitionKey.ToLowerInvariant()
+                                                               && item.RowKey == lookupCode)
+                                                        .Select(x => x.Description).FirstOrDefault();
+
+        }
+       
         private void ProcessSingleLineDelegate(string line)
         {
 
             var report = new NeissReport(line, _neisslookuprepo);
             CsvRepositories.NeissCodeLookupRepository lookupRepo = new CsvRepositories.NeissCodeLookupRepository();
             var lookupRec = lookupRepo.ReadRecords();
+             
 
-          
-          
-            report.InjuryDiagnosis.Description = lookupRec
-                                                        .Where(item => item.PartitionKey.ToLowerInvariant() == report.InjuryDiagnosis.GetType().Name.ToLowerInvariant() 
-                                                               && item.RowKey == report.InjuryDiagnosis.Code.ToString())
-                                                        .Select(x=>x.Description).FirstOrDefault();
-
-            report.NeissBodyPart.Description = lookupRec
-                                                        .Where(item => item.PartitionKey.ToLowerInvariant() == report.NeissBodyPart.GetType().Name.ToLowerInvariant()
-                                                               && item.RowKey == report.NeissBodyPart.Code.ToString())
-                                                        .Select(x => x.Description).FirstOrDefault();
-            report.Products[0].Description = lookupRec
-                                                        .Where(item => item.PartitionKey.ToLowerInvariant() == report.Products[0].GetType().Name.ToLowerInvariant()
-                                                               && item.RowKey == report.Products[0].Code.ToString())
-                                                        .Select(x => x.Description).FirstOrDefault();
-            report.Products[1].Description = lookupRec
-                                                        .Where(item => item.PartitionKey.ToLowerInvariant() == report.Products[1].GetType().Name.ToLowerInvariant()
-                                                               && item.RowKey == report.Products[1].Code.ToString())
-                                                        .Select(x => x.Description).FirstOrDefault();
-            report.NeissEventLocale.Description = lookupRec
-                                                        .Where(item => item.PartitionKey.ToLowerInvariant() == report.NeissEventLocale.GetType().Name.ToLowerInvariant()
-                                                               && item.RowKey == report.NeissEventLocale.Code.ToString())
-                                                        .Select(x => x.Description).FirstOrDefault();
-           
-            report.NeissGender.Description = lookupRec
-                                                        .Where(item => item.PartitionKey.ToLowerInvariant() == report.NeissGender.GetType().Name.ToLowerInvariant()
-                                                               && item.RowKey == report.NeissGender.Code.ToString())
-                                                        .Select(x => x.Description).FirstOrDefault();
-            report.NeissInjuryDisposition.Description = lookupRec
-                                                        .Where(item => item.PartitionKey.ToLowerInvariant() == report.NeissInjuryDisposition.GetType().Name.ToLowerInvariant()
-                                                               && item.RowKey == report.NeissInjuryDisposition.Code.ToString())
-                                                        .Select(x => x.Description).FirstOrDefault();
-            report.NeissRace.Description = lookupRec
-                                                        .Where(item => item.PartitionKey.ToLowerInvariant() == report.NeissRace.GetType().Name.ToLowerInvariant()
-                                                               && item.RowKey == report.NeissRace.Code.ToString())
-                                                        .Select(x => x.Description).FirstOrDefault();
+            report.InjuryDiagnosis.Description = ResolveLookupValue(lookupRec,report.InjuryDiagnosis.GetType().Name,report.InjuryDiagnosis.Code.ToString());
+            report.NeissBodyPart.Description = ResolveLookupValue(lookupRec, report.NeissBodyPart.GetType().Name, report.NeissBodyPart.Code.ToString());
+            for (var i = 0; i < report.Products.Count; i++)
+            {
+                report.Products[i].Description = ResolveLookupValue(lookupRec, report.Products[i].GetType().Name, report.Products[i].Code.ToString());
+            }
+            
+            report.NeissEventLocale.Description = ResolveLookupValue(lookupRec,report.NeissEventLocale.GetType().Name, report.NeissEventLocale.Code.ToString());
+            report.NeissGender.Description = ResolveLookupValue(lookupRec, report.NeissGender.GetType().Name, report.NeissGender.Code.ToString());
+            report.NeissInjuryDisposition.Description = ResolveLookupValue(lookupRec, report.NeissInjuryDisposition.GetType().Name, report.NeissInjuryDisposition.Code.ToString());
+            report.NeissRace.Description = ResolveLookupValue(lookupRec, report.NeissRace.GetType().Name, report.NeissRace.Code.ToString());
 
 
             Console.WriteLine($"preparing to add {report.CpscCaseNumber} indexes");
             _bag.Add(report);
+            
             Console.WriteLine($"Concurrent bag now has {_bag.Count} neiss reports");
-            if (_bag.Count == 4000)
+            if (_bag.Count == 25000)
             {
                 _neissrepo.Add(_bag, "neiss");
                 _bag = new ConcurrentBag<NeissReport>();

@@ -11,11 +11,13 @@ namespace bigdata.filereader
      string Type { get; set; }
     }
 
-    public interface IData:IDataCategoryType
+    public interface IArtifact:IDataCategoryType
     {
-        String UUID { get; set; }
+        String UUID { get;  }
         String Title { get; set; }
-        string Description { get; set; }
+        DateTime ArtifactDate { get;  }
+        string ArtifactSource { get; }
+        string Description { get;  }
         string FullTextSearch { get;set;}
     }
 }

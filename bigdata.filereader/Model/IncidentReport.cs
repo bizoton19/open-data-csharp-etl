@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace bigdata.filereader.Model
 {
-    public class IncidentReport : IDataCategoryType
+    public class IncidentReport : IArtifact
     {
         public IncidentReport()
         {
@@ -50,6 +50,63 @@ namespace bigdata.filereader.Model
         public SourceType IncidentSourceType { get; set; }
         public ProductCategory IncidentProductCategory { get; set; }
         public List<IncidentDocument> IncidentDocuments { get; set; }
+
+        public string UUID
+        {
+            get
+            {
+                return string.Concat(ArtifactSource,"-",this.Type,"-",this.IncidentReportNumber);
+            }
+        }
+
+        public string Title
+        {
+            get
+            {
+                return $"Incident report involving {IncidentProductCategory}-{IncidentProductDescription}" ;
+            }
+            set { }
+        }
+
+        public string Description
+        {
+            get
+            {
+                return IncidentDescription;
+            }
+        }
+
+        public string FullTextSearch
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+
+            set
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+        public DateTime ArtifactDate
+        {
+            get
+            {
+                return this.IncidentReportDate;//this date is chosen because incident date is not mandatory for a user to input
+            }
+        }
+
+        public string ArtifactSource
+        {
+            get
+            {
+                throw new NotImplementedException();
+            }
+        }
+
+       
+
         public class RelationShipType
         {
             public int RelationshipTyeId { get; set; }

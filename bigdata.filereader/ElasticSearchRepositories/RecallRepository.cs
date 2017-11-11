@@ -16,7 +16,7 @@ namespace bigdata.filereader.ElasticSearchRepositories
     {
 
             private IConnectionSettingsValues config;
-            private const string indexprefix = "cpsc-";
+            private const string indexprefix = "-";
             Settings settings;
         private string _indexname;
 
@@ -28,12 +28,8 @@ namespace bigdata.filereader.ElasticSearchRepositories
 
             private void Init()
             {
-                settings = new Settings()
-                {
-                    UserName = ConfigurationManager.AppSettings["username"],
-                    Password = ConfigurationManager.AppSettings["password"],
-                    ConnectionString = ConfigurationManager.AppSettings["elasticcloudconnection"]
-                };
+            settings = new Settings();
+                
 
                 var node = new Uri(settings.ConnectionString);
 
@@ -48,7 +44,7 @@ namespace bigdata.filereader.ElasticSearchRepositories
 
             public void Add(Recall recall)
             {
-                _indexname = string.Concat(indexprefix, recall.Type.ToLowerInvariant());
+                _indexname = string.Concat(recall.ArtifactSource.ToLowerInvariant(),indexprefix, recall.Type.ToLowerInvariant());
             var descriptor = new CreateIndexDescriptor(_indexname)
                 .Mappings(ms => ms
                 .Map<Recall>(m => m
@@ -65,6 +61,17 @@ namespace bigdata.filereader.ElasticSearchRepositories
                         )
                         
                       )
+                      .String(artifactSource=>artifactSource
+                        .Name(source=>source.ArtifactSource)
+                        .NotAnalyzed()
+                        .Fields(sf=>sf
+                            .String(t=>t
+                                .Name("raw")
+                                .NotAnalyzed()
+                             )
+                         )
+                       )
+
                       .String(rdesc=>rdesc
                         .Name(desc=>desc.Description)
                         .Index(FieldIndexOption.Analyzed)
@@ -180,6 +187,7 @@ namespace bigdata.filereader.ElasticSearchRepositories
       
             
                 ElasticClient clien = new ElasticClient(config);
+            
                 var result = Nest.Indices.Index(_indexname);
 
                 bool exist = clien.IndexExists(new IndexExistsRequest(result)).Exists;

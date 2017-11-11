@@ -9,44 +9,23 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 using bigdata.filereader.AzureStorageRepositories;
-using neiss.lookup.model;
-using bigdata.filereader.Services;
-using System.Configuration;
-using bigdata.filereader.SolrRepositories;
-using SolrNet;
-using Microsoft.Practices.ServiceLocation;
-using SolrNet.Impl;
-using SolrNet.Utils;
-using SolrNet.Commands;
-using SolrNet.DSL;
-using SolrNet.Mapping;
 using bigdata.filereader.Model.Recalls;
+using bigdata.filereader.Services;
 
 namespace bigdata.filereader
 {
     class Program
     {
-        private static string jsonPath;
+        
 
         static void Main(string[] args)
         {
             
-            Startup.Init<Recall>(ConfigurationManager.AppSettings["solrConnection"]);
-            //var headerParser = ServiceLocator.Current.GetInstance<ISolrHeaderResponseParser>();
-            //var statusParser = ServiceLocator.Current.GetInstance<ISolrStatusResponseParser>();
-              
-            //ISolrCoreAdmin solrCoreAdmin = new SolrCoreAdmin(new SolrConnection(ConfigurationManager.AppSettings["solrConnection"]), headerParser, statusParser);
-            
-                        System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
+             System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
             sw.Start();
             //int artifactCount = ExeculateETLOfRecallsToElasticSearch();
-
-            //Startup.Init<RecallDelimited>(ConfigurationManager.AppSettings["solrConnection"]);
             NeissService neissservice = new NeissService(new NeissCodeLookupRepository(), new ElasticSearchRepositories.NeissReportRepository());
-           
             neissservice.TranferDataFromCsvFileToElasticSearch(@"E:\sparkData\input");
-            //neissservice.GenerateMassivedataFromTemplate(@"G:\USERS\EXIS\ASalomon\BigData\neiss-raw-tsv\test");
-            //neissservice.GenerateMassiveNeissDataSet(ConfigurationManager.AppSettings["NeissData"]);
             sw.Stop();
             Console.WriteLine("loaded NEISS Reports ES in {0}", sw.Elapsed.Minutes);
            // Console.WriteLine("loaded {0} in {1}", artifactCount, sw.Elapsed.Minutes);
