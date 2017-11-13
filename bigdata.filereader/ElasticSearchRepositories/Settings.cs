@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace bigdata.filereader.ElasticSearchRepositories
+namespace OpenData.Shaper.Repositories.ElasticSearch
 {
     internal struct Settings
     {

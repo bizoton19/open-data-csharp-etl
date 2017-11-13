@@ -1,12 +1,12 @@
-﻿using bigdata.filereader.Model;
-using bigdata.filereader.Utilities;
+﻿using OpenData.Shaper.Model;
+using OpenData.Shaper.Utilities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace bigdata.filereader.Services
+namespace OpenData.Shaper.Services
 {
    public class DelimitedFileService
     {

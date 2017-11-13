@@ -1,13 +1,8 @@
-﻿using bigdata.filereader.Model.Recalls;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using OpenData.Shaper.Model;
 
-namespace bigdata.filereader.Model
+namespace OpenData.Shaper.Contracts
 {
-   public interface IRecallRepository
+    public interface IRecallRepository
     {
         
         Recall Get(int Number);

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace neiss.lookup.model
+namespace OpenData.Shaper.Contracts
 {
     public interface ILookupBase
     {

@@ -1,13 +1,9 @@
-﻿using bigdata.filereader.Model.Recalls;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using OpenData.Shaper.Contracts;
+using OpenData.Shaper.Model;
 
-namespace bigdata.filereader.Model
+namespace OpenData.Shaper.Factories
 {
-  public static class ModelFactory
+    public static class ModelFactory
     {
      public static IArtifact  CreateModel(string type)
         {

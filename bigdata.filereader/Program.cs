@@ -1,5 +1,4 @@
-﻿using bigdata.filereader.ElasticSearchRepositories;
-using bigdata.filereader.Model;
+﻿
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
@@ -8,11 +7,13 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using bigdata.filereader.AzureStorageRepositories;
-using bigdata.filereader.Model.Recalls;
-using bigdata.filereader.Services;
+using OpenData.Shaper.Services;
+using OpenData.Shaper.Model;
+using OpenData.Shaper.Contracts;
+using OpenData.Shaper.Repositories.AzureStorage;
+using OpenData.Shaper.Repositories.ElasticSearch;
 
-namespace bigdata.filereader
+namespace OpenData.Shaper
 {
     class Program
     {
@@ -24,7 +25,7 @@ namespace bigdata.filereader
              System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
             sw.Start();
             //int artifactCount = ExeculateETLOfRecallsToElasticSearch();
-            NeissService neissservice = new NeissService(new NeissCodeLookupRepository(), new ElasticSearchRepositories.NeissReportRepository());
+            NeissService neissservice = new NeissService(new NeissCodeLookupRepository(), new NeissReportRepository());
             neissservice.TranferDataFromCsvFileToElasticSearch(@"E:\sparkData\input");
             sw.Stop();
             Console.WriteLine("loaded NEISS Reports ES in {0}", sw.Elapsed.Minutes);
@@ -50,7 +51,7 @@ namespace bigdata.filereader
 
         private static int ExeculateETLOfRecallsToElasticSearch()
         {
-            IRecallRepository ir = new ElasticSearchRepositories.RecallRepository();
+            IRecallRepository ir = new RecallRepository();
             var artifactCount = 0;
           for (int i = 1; i < 7000; i++)
             {

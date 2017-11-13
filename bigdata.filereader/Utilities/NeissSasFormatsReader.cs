@@ -4,11 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
-using bigdata.filereader.Model;
-using neiss.lookup.model;
-using static bigdata.filereader.Model.NeissReport;
 
-namespace bigdata.filereader.Utilities
+using OpenData.Shaper.Contracts;
+using OpenData.Shaper.Model;
+using static OpenData.Shaper.Model.NeissReport;
+
+namespace OpenData.Shaper.Utilities
 {
     public class NeissSasFormatsReader
     {
@@ -70,7 +71,7 @@ namespace bigdata.filereader.Utilities
             switch (sastablename)
             {
                 case "PRODUCT":
-                    lookup = new Product();
+                    lookup = new NeissReport.Product();
                     break;
                 case "BDYPT":
                     lookup = new BodyPart();

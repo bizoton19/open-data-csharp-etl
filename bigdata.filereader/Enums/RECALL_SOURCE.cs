@@ -4,10 +4,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace bigdata.filereader.HadoopRepositories
+namespace OpenData.Shaper.Enums
 {
-  public  class NeissReportRepository
+    public enum RECALL_SOURCE
     {
-
+        FDA,
+        CPSC,
+        NHTSB
     }
 }

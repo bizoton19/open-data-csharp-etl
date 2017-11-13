@@ -1,7 +1,8 @@
-﻿using bigdata.filereader.Model;
-using bigdata.filereader.Model.Recalls;
+﻿
 using Elasticsearch.Net;
 using Nest;
+using OpenData.Shaper.Contracts;
+using OpenData.Shaper.Model;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -9,7 +10,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace bigdata.filereader.ElasticSearchRepositories
+namespace OpenData.Shaper.Repositories.ElasticSearch
 {
    
     public class RecallRepository:IRecallRepository
@@ -219,6 +220,8 @@ namespace bigdata.filereader.ElasticSearchRepositories
         {
             throw new NotImplementedException();
         }
+
+      
     }
     
 

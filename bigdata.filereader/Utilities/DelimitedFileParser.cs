@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace bigdata.filereader.Utilities
+namespace OpenData.Shaper.Utilities
 {
    public static class DelimitedFileParser
     {

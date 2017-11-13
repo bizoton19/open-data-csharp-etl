@@ -145,30 +145,30 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AzureStorageRepositories\NeissCodeLookupRepository.cs" />
-    <Compile Include="CassandraRepositories\EbayProductRepository.cs" />
-    <Compile Include="CassandraRepositories\IncidentReportRepository.cs" />
-    <Compile Include="CassandraRepositories\NeissReportRepository.cs" />
-    <Compile Include="CassandraRepositories\RecallRepository.cs" />
-    <Compile Include="CassandraRepositories\TwitterRepository.cs" />
     <Compile Include="CsvRepositories\NeissLookupRepository.cs" />
     <Compile Include="ElasticSearchRepositories\IncidentRepository.cs" />
     <Compile Include="ElasticSearchRepositories\NeissReportRepository.cs" />
     <Compile Include="ElasticSearchRepositories\RecallRepository.cs" />
     <Compile Include="ElasticSearchRepositories\Settings.cs" />
-    <Compile Include="IDataCategoryType.cs" />
+    <Compile Include="Enums\RECALL_SOURCE.cs" />
+    <Compile Include="Model\FdaRecall.cs" />
+    <Compile Include="Model\IDataCategoryType.cs" />
+    <Compile Include="Model\IDestination.cs" />
     <Compile Include="Model\ILookupBase.cs" />
     <Compile Include="Model\IncidentReport.cs" />
     <Compile Include="Model\INeissCodeLookupRepository.cs" />
     <Compile Include="Model\INeissReportRepository.cs" />
+    <Compile Include="Model\ISourceInput.cs" />
     <Compile Include="Model\ModelFactory.cs" />
     <Compile Include="Model\NeissReport.cs" />
     <Compile Include="Model\Recall.cs" />
     <Compile Include="Model\IIncidentRepository.cs" />
     <Compile Include="Model\IRecallRepository.cs" />
-    <Compile Include="MongoDBRepositories\NeissReportRepository.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Services\DelimitedFileService.cs" />
+    <Compile Include="Factories\RecallFactory.cs" />
+    <Compile Include="Services\RecallService.cs" />
     <Compile Include="Services\NeissService.cs" />
     <Compile Include="Utilities\DelimitedFileParser.cs" />
     <Compile Include="Utilities\ExtensionMethods.cs" />
@@ -188,13 +188,9 @@
     <Resource Include="elastic-config.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Resource>
-    <None Include="Model\CpscData.cd" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="HadoopRepositories\" />
-    <Folder Include="HbaseRepository\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <Content Include="changelog.txt" />
   </ItemGroup>

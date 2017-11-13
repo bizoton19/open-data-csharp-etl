@@ -1,14 +1,11 @@
-﻿using bigdata.filereader.Model;
-using neiss.lookup.model;
+﻿using OpenData.Shaper.Contracts;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using static bigdata.filereader.Model.NeissReport;
+using static OpenData.Shaper.Model.NeissReport;
 
-namespace bigdata.filereader.CsvRepositories
+namespace OpenData.Shaper.Repositories.Csv
 {
     public class NeissEntity 
     {

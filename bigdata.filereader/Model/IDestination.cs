@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace bigdata.filereader.HadoopRepositories
+namespace OpenData.Shaper.Model
 {
-  public  class IncidentReportRepository
+  public  interface IDestination
     {
     }
 }

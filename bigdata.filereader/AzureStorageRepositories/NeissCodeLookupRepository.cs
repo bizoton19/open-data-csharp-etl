@@ -1,18 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.Azure;
 using Microsoft.WindowsAzure.Storage;
 using Microsoft.WindowsAzure.Storage.Table;
-using neiss.lookup.model;
-using bigdata.filereader.Model;
-using static bigdata.filereader.Model.NeissReport;
+using OpenData.Shaper.Contracts;
+using OpenData.Shaper.Model;
+using static OpenData.Shaper.Model.NeissReport;
 /// <summary>
 /// PLugin module that implements the INeissCodeLookupRepository contract. This module performs CRUD operation on Azure storage tables
 /// </summary>
-namespace bigdata.filereader.AzureStorageRepositories
+namespace OpenData.Shaper.Repositories.AzureStorage
 {
     public class NeissEntity : TableEntity
     {
@@ -67,7 +64,7 @@ namespace bigdata.filereader.AzureStorageRepositories
         {
             if (entityType == "Product")
             {
-                return new Product();
+                return new NeissReport.Product();
             }
             if (entityType == "Gender")
             {

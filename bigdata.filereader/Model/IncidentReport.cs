@@ -1,14 +1,11 @@
-﻿using MongoDB.Bson.IO;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
+using OpenData.Shaper.Contracts;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace bigdata.filereader.Model
+namespace OpenData.Shaper.Model
 {
     public class IncidentReport : IArtifact
     {

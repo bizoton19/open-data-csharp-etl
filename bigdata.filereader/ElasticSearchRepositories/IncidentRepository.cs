@@ -1,16 +1,12 @@
-﻿using bigdata.filereader.Model;
-using System;
-using System.Configuration;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 using Nest;
 using Elasticsearch.Net;
+using OpenData.Shaper.Contracts;
+using OpenData.Shaper.Model;
 
-namespace bigdata.filereader.ElasticSearchRepositories
+namespace OpenData.Shaper.Repositories.ElasticSearch
 {
-    
+
     public class IncidentRepository : IIncidentRepository
     {
         private IConnectionSettingsValues config;
@@ -82,5 +78,7 @@ namespace bigdata.filereader.ElasticSearchRepositories
         {
             throw new NotImplementedException();
         }
+
+       
     }
 }

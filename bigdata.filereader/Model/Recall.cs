@@ -1,5 +1,5 @@
 ﻿using Newtonsoft.Json;
-
+using OpenData.Shaper.Contracts;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -8,7 +8,7 @@ using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace bigdata.filereader.Model.Recalls
+namespace OpenData.Shaper.Model
 {
     public abstract class RecallBase: IArtifact
     {
@@ -125,6 +125,7 @@ namespace bigdata.filereader.Model.Recalls
             return dataTypes;
         }
     }
+    
     public class Recall : RecallBase,IArtifact
     {
         public Recall()

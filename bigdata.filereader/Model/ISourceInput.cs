@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace bigdata.filereader.MongoDBRepositories
+namespace OpenData.Shaper.Contracts
 {
-   public class NeissMongoDbRepository
+   public interface ISourceInput
     {
 
     }

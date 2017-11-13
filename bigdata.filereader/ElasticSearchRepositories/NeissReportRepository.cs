@@ -1,4 +1,4 @@
-﻿using bigdata.filereader.Model;
+﻿
 using System;
 using System.Configuration;
 using System.Collections.Generic;
@@ -7,8 +7,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Nest;
 using Elasticsearch.Net;
+using OpenData.Shaper.Contracts;
+using OpenData.Shaper.Model;
 
-namespace bigdata.filereader.ElasticSearchRepositories
+namespace OpenData.Shaper.Repositories.ElasticSearch
 {
     public class NeissReportRepository : INeissReportRepository
     {
@@ -48,7 +50,7 @@ namespace bigdata.filereader.ElasticSearchRepositories
             if (reports.Any())
             {
                 var indexResult = clien.IndexMany<NeissReport>(reports, indexname, type);
-                Console.WriteLine($"added 1 more batch @ {DateTime.Now} with a request body of {Environment.NewLine} {indexResult.CallDetails.Uri} the response was {indexResult.CallDetails.HttpStatusCode}");
+                
                 
             }
                 
@@ -58,7 +60,7 @@ namespace bigdata.filereader.ElasticSearchRepositories
         {
             string indexname = string.Concat(report.ArtifactSource,indexNameSplitter, report.Type.ToLowerInvariant());
             ElasticClient clien = BootstrapClient(indexname);
-            Console.WriteLine($"adding {report.CpscCaseNumber} to elastic search");
+           
             var indexResult = await clien.IndexAsync<NeissReport>(report, i =>
              i.Index(indexname)
              .Id(report.CpscCaseNumber)
@@ -70,9 +72,8 @@ namespace bigdata.filereader.ElasticSearchRepositories
         {
             var descriptor = new CreateIndexDescriptor(indexname)
                 .Mappings(ms => ms
-                .Map<NeissReport>(m => m.
-                    AutoMap()
-                        .Properties(r => r
+                .Map<NeissReport>(m => m
+                   .Properties(r => r
                            .String(type => type
                            .Name(nt => nt.Type)
                            .NotAnalyzed()
@@ -98,10 +99,11 @@ namespace bigdata.filereader.ElasticSearchRepositories
                       .String(rdesc => rdesc
                         .Name(desc => desc.Description)
                         .Index(FieldIndexOption.Analyzed)
+                        
 
                       )
                        .String(rdesc => rdesc
-                        .Name(desc => desc.Description)
+                        .Name(desc => desc.Narrative)
                         .Index(FieldIndexOption.No)
                         .Store(false)
 

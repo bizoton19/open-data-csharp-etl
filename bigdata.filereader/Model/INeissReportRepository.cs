@@ -1,10 +1,11 @@
-﻿using System;
+﻿using OpenData.Shaper.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace bigdata.filereader.Model
+namespace OpenData.Shaper.Contracts
 {
    public interface INeissReportRepository
     {

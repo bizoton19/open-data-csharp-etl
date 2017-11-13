@@ -1,42 +1,15 @@
-﻿using bigdata.filereader.CsvRepositories;
-using bigdata.filereader.Model;
-using bigdata.filereader.Services;
-using neiss.lookup.model;
+﻿
+using OpenData.Shaper.Contracts;
+using OpenData.Shaper.Model;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-namespace neiss.lookup.model
+namespace OpenData.Shaper.Model
 {
-    public abstract class ProductCodeEvent
-    {
-        public DateTime EventDate { get; set; }
-        public NeissReport.Product Product { get; set; }
-
-
-    }
-    public class ProductCodeDeletedEvent : ProductCodeEvent
-    {
-
-    }
-
-    public class ProductCodeDeactivatedEvent : ProductCodeEvent
-    {
-        
-
-    }
-    public class ProductCodeReinstatedEvent: ProductCodeEvent { }
-    public class ProductCodeInitiationEvent: ProductCodeEvent
-    {
-
-    }
-
-    public class ProductCodeExpandedEvent : ProductCodeEvent
-    {
-        List<NeissReport.Product> ExpendedInto { get; set; }
-    }
+   
     public abstract class LookupBase: ILookupBase
     {
         
@@ -67,7 +40,7 @@ namespace neiss.lookup.model
     }
    
 }
-namespace bigdata.filereader.Model
+namespace OpenData.Shaper.Model
 {
     
 
@@ -105,30 +78,30 @@ namespace bigdata.filereader.Model
                 Age = Int32.Parse(fields[5]);
                 NeissGender = new Gender()
                 {
-                    Code = GetFieldCodeValue(fields[6]).Value,
-                    //Description = _repo.Get(GetFieldCodeValue(fields[6]).Value, "Gender").Description
+                    Code = GetFieldCodeValue(fields[6]).Value
+                    
 
                 };
                
                 NeissRace = new Race()
                 {
-                    Code = GetFieldCodeValue(fields[7]).Value,
-                    //Description=_repo.Get(GetFieldCodeValue(fields[7]).Value, "Race").Description
+                    Code = GetFieldCodeValue(fields[7]).Value
+                   
 
 
                 };
                 RaceOther = fields[8];
                 InjuryDiagnosis = new InjuryDiagnonis()
                 {
-                    Code = GetFieldCodeValue(fields[9]).Value,
-                   // Description = _repo.Get(GetFieldCodeValue(fields[9]).Value, "InjuryDiagnosis").Description
+                    Code = GetFieldCodeValue(fields[9]).Value
+                   
 
                 };
                 DiagnosisOther = fields[10];
                 NeissBodyPart = new BodyPart()
                 {
                     Code = GetFieldCodeValue(fields[11]).Value,
-                   // Description = _repo.Get(GetFieldCodeValue(fields[11]).Value, "BodyPart").Description
+                  
                 };
                 NeissInjuryDisposition = new InjuryDisposition()
                 {
@@ -138,7 +111,7 @@ namespace bigdata.filereader.Model
                 NeissEventLocale = new EventLocale()
                 {
                     Code = GetFieldCodeValue(fields[13]).Value,
-                    //Description = _repo.Get(GetFieldCodeValue(fields[13]).Value, "EventLocale").Description
+                    
 
                 };
                 Products = new List<Product>()
@@ -146,13 +119,13 @@ namespace bigdata.filereader.Model
                         new Product()
                         {
                             Code = GetFieldCodeValue(fields[15]).Value,
-                            //Description = _repo.Get(GetFieldCodeValue(fields[15]).Value, "Product").Description
+                            
 
                         },
                         new Product()
                         {
                             Code=GetFieldCodeValue(fields[16]).Value,
-                            //Description = _repo.Get(GetFieldCodeValue(fields[16]).Value, "Product").Description
+                           
 
                         }
                     };
@@ -165,7 +138,7 @@ namespace bigdata.filereader.Model
                     };
             }
         }
-        public class Race : LookupBase
+        public class Race : OpenData.Shaper.Model.LookupBase
         {
            
         }

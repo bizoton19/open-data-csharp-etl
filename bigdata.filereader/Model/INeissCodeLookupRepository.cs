@@ -1,13 +1,8 @@
-﻿using neiss.lookup.model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 
-namespace bigdata.filereader.Model
+namespace OpenData.Shaper.Contracts
 {
-  public  interface INeissCodeLookupRepository
+    public  interface INeissCodeLookupRepository
     {
         ILookupBase Get(int? code, string entityType);
         void Add(ILookupBase code);

@@ -1,5 +1,7 @@
-﻿using bigdata.filereader.Model;
-using neiss.lookup.model;
+﻿using OpenData.Shaper.Contracts;
+using OpenData.Shaper.Model;
+using OpenData.Shaper.Repositories.AzureStorage;
+using OpenData.Shaper.Repositories.Csv;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -7,9 +9,9 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using static bigdata.filereader.Model.NeissReport;
+using static OpenData.Shaper.Model.NeissReport;
 
-namespace bigdata.filereader.Services
+namespace OpenData.Shaper.Services
 {
     public class NeissService
     {
@@ -29,6 +31,9 @@ namespace bigdata.filereader.Services
             ILookupBase keyvalue = _neisslookuprepo.Get(rowkey, partitionkey);
             return keyvalue;
 
+        }
+        public void TransferData(dynamic from, dynamic to)
+        {
 
         }
         public void TranferDataFromCsvFileToElasticSearch(string sourcefolderPath, string elasticConnectionString = null)
@@ -45,24 +50,8 @@ namespace bigdata.filereader.Services
             Console.WriteLine($"Load to elasticsearch ended in {sw.Elapsed} minutes");
             Console.WriteLine($"Current End Time {System.DateTime.Now}");
 
-
-
-
-
-
         }
      
-
-     
-        public void TranferDataFromCsvFileToMongoDb(string folderPath, string elasticConnectionString)
-        {
-
-        }
-
-        public void TranferDataFromCsvFileToCassandra(string folderPath, string elasticConnectionString)
-        {
-
-        }
         private int? GetFieldCodeValue(string[] fields, int fieldposition)
         {
             return string.IsNullOrEmpty(fields[fieldposition]) ? default(int) : Int32.Parse(fields[fieldposition]);
@@ -153,7 +142,7 @@ namespace bigdata.filereader.Services
           
 
         }
-        private string ResolveLookupValue(IList<CsvRepositories.NeissEntity> lookupRec,string partitionKey,string lookupCode)
+        private string ResolveLookupValue(IList<Repositories.Csv.NeissEntity> lookupRec,string partitionKey,string lookupCode)
         {
             return lookupRec
                             .Where(item => item.PartitionKey.ToLowerInvariant() == partitionKey.ToLowerInvariant()
@@ -166,7 +155,7 @@ namespace bigdata.filereader.Services
         {
 
             var report = new NeissReport(line, _neisslookuprepo);
-            CsvRepositories.NeissCodeLookupRepository lookupRepo = new CsvRepositories.NeissCodeLookupRepository();
+            Repositories.Csv.NeissCodeLookupRepository lookupRepo = new Repositories.Csv.NeissCodeLookupRepository();
             var lookupRec = lookupRepo.ReadRecords();
              
 
