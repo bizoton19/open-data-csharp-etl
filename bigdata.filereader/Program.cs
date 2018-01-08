@@ -1,19 +1,14 @@
-﻿
-using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Net.Http;
-using System.Text;
-using System.Threading.Tasks;
-using OpenData.Shaper.Services;
-using OpenData.Shaper.Model;
-using OpenData.Shaper.Contracts;
-using OpenData.Shaper.Repositories.AzureStorage;
-using OpenData.Shaper.Repositories.ElasticSearch;
+﻿using System;
+using OpenData.Shaper.Utilities;
+using CPSC.OpenData.Shaper.Services;
+using CPSC.OpenData.Shaper.Contracts;
+using CPSC.OpenData.Shaper.Repositories.Csv;
+using CPSC.OpenData.Shaper.Repositories.ElasticSearch;
+using OpenData.Shaper.Model.FDA;
+using OpenData.Shaper.FDA.Repositories.Elasticsearch;
+using System.Globalization;
 
-namespace OpenData.Shaper
+namespace OpenData.Runner
 {
     class Program
     {
@@ -21,22 +16,28 @@ namespace OpenData.Shaper
 
         static void Main(string[] args)
         {
-            
-             System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
-            sw.Start();
-            //int artifactCount = ExeculateETLOfRecallsToElasticSearch();
-            NeissService neissservice = new NeissService(new NeissCodeLookupRepository(), new NeissReportRepository());
-            neissservice.TranferDataFromCsvFileToElasticSearch(@"E:\sparkData\input");
-            sw.Stop();
-            Console.WriteLine("loaded NEISS Reports ES in {0}", sw.Elapsed.Minutes);
-           // Console.WriteLine("loaded {0} in {1}", artifactCount, sw.Elapsed.Minutes);
+            int artifactCount = new RecallService().ExtractMapLoadTo(new CPSC.OpenData.Shaper.Repositories.ElasticSearch.RecallRepository());
+            //NeissService neissservice = new NeissService(new NeissCodeLookupRepository(), new NeissReportRepository());
+            //neissservice.TranferDataFromCsvFileToElasticSearch(@"E:\sparkData\input");
+
+
+            //var fdaRecall = new Recall();
+            //var recallList = fdaRecall.GetDataFromPublicApi(@"E:\sparkData\FDA_Food_Recalls\food-enforcement-0001-of-0001.json");
+            //var repo = new Shaper.FDA.Repositories.Elasticsearch.RecallRepository();
+            //recallList.ForEach(r =>
+            //   repo.Add(r)
+            //);
+
+            //sw.Stop();
+            //Console.WriteLine("loaded NEISS Reports ES in {0}", sw.Elapsed.Minutes);
+            // Console.WriteLine("loaded {0} in {1}", artifactCount, sw.Elapsed.Minutes);
             Console.ReadKey();
         }
 
         private static void LoadNeissLookUpValuesToKeyValueStorage()
         {
             INeissCodeLookupRepository neiss = new NeissCodeLookupRepository();
-            var lookupsFromNeissSASFile = new Utilities.NeissSasFormatsReader("D:\\NEISS_SAS_formats.txt").ReadAll();
+            var lookupsFromNeissSASFile = new NeissSasFormatsReader("D:\\NEISS_SAS_formats.txt").ReadAll();
             foreach (var lookup in lookupsFromNeissSASFile)
             {
                 Console.WriteLine($"adding {lookup.Description}-{lookup.Code} to azure table ");
@@ -49,37 +50,7 @@ namespace OpenData.Shaper
 
         }
 
-        private static int ExeculateETLOfRecallsToElasticSearch()
-        {
-            IRecallRepository ir = new RecallRepository();
-            var artifactCount = 0;
-          for (int i = 1; i < 7000; i++)
-            {
-                
-                string recallsUrl = $"https://www.saferproducts.gov/RestWebServices/Recall?RecallID={i}&format=json";
-                // string incidentDataUrl = $"https://www.saferproducts.gov/incidentdata/api/incidentreports?page={i}";
-
-                //jsonPath = incidentDataUrl;
-
-                var artifacts = new Recall().GetDataFromPublicApi(recallsUrl);
-                artifactCount += artifacts.Count;
-                artifacts.ForEach(r =>
-                        AddArtifact(r, ir)
-            );
-                artifacts.Clear();
-                Console.WriteLine($"page {i} is last page loaded");
-            }
-
-            return artifactCount;
-        }
-
-
-
-        private static void AddArtifact(Recall r, IRecallRepository ir)
-        {
-            ir.Add(r);
-            Console.WriteLine("Added artifact of type {0} and id of {1} to elasticSearch", r.Type,r.RecallID );
-        }
+      
 
     }
 
