@@ -181,7 +181,7 @@
         {
             get
             {
-                return SOURCE;
+                return SOURCE.ToLower();
             }
         }
 

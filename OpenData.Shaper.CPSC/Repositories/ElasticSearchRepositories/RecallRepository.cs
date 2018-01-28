@@ -47,7 +47,7 @@ namespace CPSC.OpenData.Shaper.Repositories.ElasticSearch
                         .NotAnalyzed()
                         .Fields(tf => tf
                             .String(t => t
-                                .Name("raw")
+                                .Name("keyword")
                                 .NotAnalyzed()
                             )
                         )
@@ -58,7 +58,7 @@ namespace CPSC.OpenData.Shaper.Repositories.ElasticSearch
                         .NotAnalyzed()
                         .Fields(csf => csf
                             .String(t => t
-                                .Name("raw")
+                                .Name("keyword")
                                 .NotAnalyzed()
                              )
                          )
@@ -68,7 +68,7 @@ namespace CPSC.OpenData.Shaper.Repositories.ElasticSearch
                         .NotAnalyzed()
                         .Fields(sf => sf
                             .String(t => t
-                                .Name("raw")
+                                .Name("keyword")
                                 .NotAnalyzed()
                              )
                          )
@@ -101,7 +101,7 @@ namespace CPSC.OpenData.Shaper.Repositories.ElasticSearch
                                 .Name(t => t.Type)
                                 .Fields(f => f // fields are additional props
                                     .String(sf => sf
-                                        .Name("raw") //es will store as raw field for aggregation purposes
+                                        .Name("keyword") //es will store as raw field for aggregation purposes
                                         .NotAnalyzed()  //do not analyze this field just store it as raw text
                             )
 
@@ -122,7 +122,7 @@ namespace CPSC.OpenData.Shaper.Repositories.ElasticSearch
                             .Name(n => n.Name)
                             .Fields(f => f
                                 .String(sf => sf
-                                    .Name("raw")
+                                    .Name("keyword")
                                     .NotAnalyzed()
                                  )
                             )
@@ -141,7 +141,7 @@ namespace CPSC.OpenData.Shaper.Repositories.ElasticSearch
                             .Name(n => n.Name)
                             .Fields(f => f
                                 .String(sf => sf
-                                    .Name("raw")
+                                    .Name("keyword")
                                     .NotAnalyzed()
                                  )
                             )

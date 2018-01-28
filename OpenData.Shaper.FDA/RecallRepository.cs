@@ -44,7 +44,7 @@ namespace OpenData.Shaper.FDA.Repositories.Elasticsearch
 
                  .Mappings(ms => ms
                 .Map<Recall>(m => m
-
+                 .AutoMap()
                     .Properties(r => r
                      .String(type => type
                         .Name(rt => rt.Type)
@@ -63,7 +63,7 @@ namespace OpenData.Shaper.FDA.Repositories.Elasticsearch
                             .String(t => t
                                 .Name("keyword")
                                 .NotAnalyzed()
-                             )
+                             ) 
                          )
                        )
                       .String(rdesc => rdesc
@@ -155,7 +155,7 @@ namespace OpenData.Shaper.FDA.Repositories.Elasticsearch
                          )
                          )
                          .String(recf =>recf
-                        .Name(f => f.recalling_firm)
+                        .Name(f => f.recalling_firm )
                         .NotAnalyzed()
                         .Fields(sf => sf
                             .String(t => t
@@ -166,7 +166,7 @@ namespace OpenData.Shaper.FDA.Repositories.Elasticsearch
                          )
 
 
-                ).AutoMap()
+                )
                 ));
             ElasticClient clien = new ElasticClient(config);
 

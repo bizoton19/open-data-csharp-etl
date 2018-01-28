@@ -3,15 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "bigdata.filereader", "bigdata.filereader\bigdata.filereader.csproj", "{5A22FB94-F847-4F1F-893E-B3B2FE29854D}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenData.Shaper.Default", "OpenData.Shaper.Default\OpenData.Shaper.Default.csproj", "{9BE08932-AED4-4FC5-95F0-C71EE77873A1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenData.Shaper.FDA", "OpenData.Shaper.FDA\OpenData.Shaper.FDA.csproj", "{7D07AA21-8E63-4BF1-B243-CBCDD7EB9791}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenData.Shaper.CPSC", "OpenData.Shaper.CPSC\OpenData.Shaper.CPSC.csproj", "{994CCA4C-8A92-43B8-9F0E-3D096BD00B67}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenData.Runner", "OpenData.Runner\OpenData.Runner.csproj", "{15746D68-BCFE-4490-8163-474B044BCAF5}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{314E8103-D4DB-4E2E-BDAE-86E8C2F48289}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "OpenData.Runner", "OpenData.Runner\OpenData.Runner.csproj", "{5A22FB94-F847-4F1F-893E-B3B2FE29854D}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -19,10 +19,6 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{5A22FB94-F847-4F1F-893E-B3B2FE29854D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{5A22FB94-F847-4F1F-893E-B3B2FE29854D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{5A22FB94-F847-4F1F-893E-B3B2FE29854D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{5A22FB94-F847-4F1F-893E-B3B2FE29854D}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9BE08932-AED4-4FC5-95F0-C71EE77873A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9BE08932-AED4-4FC5-95F0-C71EE77873A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9BE08932-AED4-4FC5-95F0-C71EE77873A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -35,10 +31,10 @@ Global
 		{994CCA4C-8A92-43B8-9F0E-3D096BD00B67}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{994CCA4C-8A92-43B8-9F0E-3D096BD00B67}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{994CCA4C-8A92-43B8-9F0E-3D096BD00B67}.Release|Any CPU.Build.0 = Release|Any CPU
-		{15746D68-BCFE-4490-8163-474B044BCAF5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{15746D68-BCFE-4490-8163-474B044BCAF5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{15746D68-BCFE-4490-8163-474B044BCAF5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{15746D68-BCFE-4490-8163-474B044BCAF5}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5A22FB94-F847-4F1F-893E-B3B2FE29854D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5A22FB94-F847-4F1F-893E-B3B2FE29854D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5A22FB94-F847-4F1F-893E-B3B2FE29854D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5A22FB94-F847-4F1F-893E-B3B2FE29854D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
