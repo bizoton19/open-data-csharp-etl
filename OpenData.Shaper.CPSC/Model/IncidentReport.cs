@@ -77,15 +77,7 @@ namespace CPSC.OpenData.Shaper.Model
 
         public string FullTextSearch
         {
-            get
-            {
-                throw new NotImplementedException();
-            }
-
-            set
-            {
-                throw new NotImplementedException();
-            }
+            get; set;
         }
 
         public DateTime ArtifactDate
@@ -174,5 +166,13 @@ namespace CPSC.OpenData.Shaper.Model
 
             return dataTypes;
         }
+    }
+
+    public struct Pagination
+    {
+        public int TotalCount { get; set; }
+        public int TotalPages { get; set; }
+        public string PrevPageLink { get; set; }
+        public string NextPageLink { get; set; }
     }
 }

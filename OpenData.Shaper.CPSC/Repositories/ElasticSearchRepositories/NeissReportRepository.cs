@@ -66,7 +66,7 @@ namespace CPSC.OpenData.Shaper.Repositories.ElasticSearch
              i.Index(indexname)
              .Id(report.CpscCaseNumber)
              .Type(report.GetType().Name.ToLowerInvariant())
-             .Refresh());
+             .Refresh(Refresh.True));
         }
 
         private ElasticClient BootstrapClient(string indexname)

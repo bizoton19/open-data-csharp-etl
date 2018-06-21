@@ -39,15 +39,202 @@ namespace CPSC.OpenData.Shaper.Repositories.ElasticSearch
             string indexname = string.Concat(incident.ArtifactSource.ToLowerInvariant(), indexNameSplitter, incident.Type.ToLowerInvariant());
             var descriptor = new CreateIndexDescriptor(indexname)
                 .Mappings(ms => ms
-                .Map<IncidentReport>(m => m.AutoMap())
-                .Map<IncidentReport.RelationShipType>(m => m.AutoMap())
-                .Map<IncidentReport.Gender>(m => m.AutoMap())
-                .Map<IncidentReport.Locale>(m => m.AutoMap())
-                .Map<IncidentReport.SeverityType>(m => m.AutoMap())
-                .Map<IncidentReport.SourceType>(m => m.AutoMap())
-                .Map<IncidentReport.ProductCategory>(m => m.AutoMap())
-                .Map<IncidentReport.IncidentDocument>(m => m.AutoMap())
-                );
+                .Map<IncidentReport>(m =>
+                    m.AutoMap()
+                        .Properties(i => i
+                            .String(type => type
+                                .Name(rt => rt.Type)
+                                .NotAnalyzed()
+                                .Fields(tf => tf
+                                    .String(t => t
+                                        .Name("keyword")
+                                        .NotAnalyzed()
+                                    )
+                                )
+
+
+                ).String(category => category
+                    .Name(cat => cat.Category)
+                    .NotAnalyzed()
+                    .Fields(csf => csf
+                        .String(t => t
+                            .Name("keyword")
+                            .NotAnalyzed()
+                            )
+                        )
+                 ).String(asrc => asrc
+                    .Name(source => source.ArtifactSource)
+                    .NotAnalyzed()
+                    .Fields(sf => sf
+                        .String(t => t
+                            .Name("keyword")
+                            .NotAnalyzed()
+                            )
+                        )
+                    )
+                .String(idesc => idesc
+                    .Name(desc => desc.Description)
+                    .Index(FieldIndexOption.Analyzed)
+                    )
+                 .String(cc => cc
+                    .Name(cont => cont.CompanyCommentsExpended)
+                    .Index(FieldIndexOption.Analyzed)
+                    .Store(false)
+                    )
+                    .String(ti => ti
+                        .Name(title => title.Title)
+                        .Index(FieldIndexOption.Analyzed)
+                        )
+
+
+                .Nested<IncidentReport.RelationShipType>(rt => rt
+                  .Name(c => c.Relationship)
+                  .AutoMap()
+                  .Properties(rel => rel
+                   .String(typeId => typeId
+                       .Name(r => r.RelationshipTyeId)
+                       .NullValue("0")
+                       .Index(FieldIndexOption.NotAnalyzed)
+               )
+                .String(type => type
+                               .Name(t => t.RelationshipTypePublicName)
+                               .Fields(f => f // fields are additional props
+                                   .String(sf => sf
+                                       .Name("keyword") //es will store as raw field for aggregation purposes
+                                       .NotAnalyzed()  //do not analyze this field just store it as raw text
+                           )
+
+                         )
+
+                       )
+                        )
+                        ).Nested<IncidentReport.ProductCategory>(pc => pc
+                        .Name(p => p.IncidentProductCategory)
+                        .AutoMap()
+                        .Properties(cat => cat
+                        .String(name => name
+                        .Name(n => n.ProductCategoryPublicName)
+                        .Fields(f => f
+                        .String(sf => sf
+                        .Name("keyword")
+                        .NotAnalyzed()
+                        )
+                        )
+                        )
+                        )
+                        ).Nested<IncidentReport.Gender>(rm => rm
+                    .Name(mu => mu.VictimGender)
+                    .AutoMap()
+                    .Properties(manu => manu
+                        .String(id => id
+                            .Name(n => n.GenderId)
+                            .NullValue("0")
+                        )
+                        .String(name => name
+                            .Name(n => n.GenderPublicName)
+                            .Fields(f => f
+                                .String(sf => sf
+                                    .Name("keyword")
+                                    .NotAnalyzed()
+                                 )
+                            )
+                        )
+                   )
+                )
+               .Nested<IncidentReport.Locale>(rm => rm
+                    .Name(mu => mu.IncidentLocale)
+                    .AutoMap()
+                    .Properties(manu => manu
+                        .String(id => id
+                            .Name(n => n.LocalId)
+                            .NullValue("0")
+                        )
+                        .String(name => name
+                            .Name(n => n.LocalPublicName)
+                            .Fields(f => f
+                                .String(sf => sf
+                                    .Name("keyword")
+                                    .NotAnalyzed()
+                                 )
+                            )
+                        )
+                   )
+                )
+                .Nested<IncidentReport.SeverityType>(rm => rm
+                    .Name(mu => mu.IncidentSeverityType)
+                    .AutoMap()
+                    .Properties(manu => manu
+                        .String(id => id
+                            .Name(n => n.SeverityTypeId)
+                            .NullValue("0")
+                        )
+                        .String(name => name
+                            .Name(n => n.SeverityTypePublicName)
+                            .Fields(f => f
+                                .String(sf => sf
+                                    .Name("keyword")
+                                    .NotAnalyzed()
+                                 )
+                            )
+                        )
+                   )
+                ).Nested<IncidentReport.SourceType>(rm => rm
+                    .Name(mu => mu.IncidentSourceType)
+                    .AutoMap()
+                    .Properties(manu => manu
+                        .String(id => id
+                            .Name(n => n.SourceTypeId)
+                            .NullValue("0")
+                        )
+                        .String(name => name
+                            .Name(n => n.SourceTypePublicName)
+                            .Fields(f => f
+                                .String(sf => sf
+                                    .Name("keyword")
+                                    .NotAnalyzed()
+                                 )
+                            )
+                        )
+                   )
+                ).Nested<IncidentReport.IncidentDocument>(rm => rm
+                    .Name(mu => mu.IncidentDocuments)
+                    .AutoMap()
+                    .Properties(manu => manu
+                        .String(id => id
+                            .Name(n => n.DocumentId)
+                            .NullValue("0")
+                        )
+                        .String(name => name
+                            .Name(n => n.DocumentLocation)
+                            .Fields(f => f
+                                .String(sf => sf
+                                    .Name("keyword")
+                                    .NotAnalyzed()
+                                 )
+                            )
+                        )
+                        .String(name1 => name1
+                            .Name(n1 => n1.FileName)
+                            .Fields(f1 => f1
+                                .String(sf1 => sf1
+                                    .Name("keyword")
+                                    .NotAnalyzed()
+                                 )
+                            )
+                        )
+
+                        .String(name2 => name2
+                            .Name(n2 => n2.FileExtension)
+                            .Fields(f2 => f2
+                                .String(sf2 => sf2
+                                    .Name("keyword")
+                                    .NotAnalyzed()
+                                 )
+                            )
+                        )
+                   )
+                ))));
+               
             ElasticClient clien = new ElasticClient(config);
             var result =Nest.Indices.Index(indexname);
             
@@ -61,8 +248,8 @@ namespace CPSC.OpenData.Shaper.Repositories.ElasticSearch
              i.Index(indexname)
              .Id(incident.IncidentReportId.ToString())
              .Type(incident.Type.ToLowerInvariant())
-             .Refresh());
-    
+             .Refresh(Refresh.True));
+
         }
 
         public IncidentReport Get(string IncidentReporId)

@@ -4,8 +4,8 @@ using CPSC.OpenData.Shaper.Services;
 using CPSC.OpenData.Shaper.Contracts;
 using CPSC.OpenData.Shaper.Repositories.Csv;
 using CPSC.OpenData.Shaper.Repositories.ElasticSearch;
-using OpenData.Shaper.Model.FDA;
-using OpenData.Shaper.FDA.Repositories.Elasticsearch;
+using CPSC.OpenData.Shaper.Model;
+using CPSC.OpenData.Shaper.Repositories;
 using System.Globalization;
 
 namespace OpenData.Runner
@@ -21,14 +21,9 @@ namespace OpenData.Runner
             //NeissService neissservice = new NeissService(new NeissCodeLookupRepository(), new NeissReportRepository());
             //neissservice.TranferDataFromCsvFileToElasticSearch(@"E:\sparkData\input");
 
-            var fdaRecall = new Recall();
-            var recallList = fdaRecall.GetDataFromPublicApi(@"E:\sparkData\FDA_Food_Recalls\food-enforcement-0001-of-0001.json");
-            var repo = new Shaper.FDA.Repositories.Elasticsearch.RecallRepository();
-            recallList.ForEach(r =>
-               repo.Add(r)
-            );
-
-           
+            //var cpscRecall = new Recall();
+            //int artifactCount = new RecallService().ExtractMapLoadTo(new CPSC.OpenData.Shaper.Repositories.ElasticSearch.RecallRepository());
+            int art = new IncidentService().ExtractMapLoadTo(new CPSC.OpenData.Shaper.Repositories.ElasticSearch.IncidentRepository());
             Console.ReadKey();
         }
 

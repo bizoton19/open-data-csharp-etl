@@ -200,8 +200,7 @@ namespace CPSC.OpenData.Shaper.Repositories.ElasticSearch
             var indexResult = clien.Index<Recall>(recall, i =>
              i.Index(_indexname)
              .Id(recall.RecallID.ToString())
-             .Type(recall.Type.ToLowerInvariant())
-             .Refresh());
+             .Type(recall.Type.ToLowerInvariant()).Refresh(Refresh.True));
         }
 
         public Recall Get(string recallId)
